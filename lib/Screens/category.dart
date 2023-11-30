@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:podcastapp/colors.dart';
 
 import '../textstyle.dart';
+import 'categoryList.dart';
 
 class Category extends StatefulWidget {
   const Category({super.key});
@@ -30,6 +31,7 @@ class _CategoryState extends State<Category> {
     "Drama",
     "Spirituality",
   ];
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -68,16 +70,21 @@ class _CategoryState extends State<Category> {
                       itemBuilder: (context, index){
                         return Padding(
                           padding: const EdgeInsets.all(4.0),
-                          child: Container(
-                            height: 40,
-                            width: 60,
-                            decoration: BoxDecoration(
-                                border: Border.all(color: textColor,width: 1),
-                                borderRadius: BorderRadius.circular(50),
-                                color: Colors.transparent
-                            ),
-                            child: Center(
-                              child: Text(items[index], style: categoryCardText),
+                          child: GestureDetector(
+                            onTap: (){
+                              Navigator.of(context).push(MaterialPageRoute(builder: (context)=>CategoryList( categoryHead: items[index])));
+                            },
+                            child: Container(
+                              height: 40,
+                              width: 60,
+                              decoration: BoxDecoration(
+                                  border: Border.all(color: textColor,width: 1),
+                                  borderRadius: BorderRadius.circular(50),
+                                  color: Colors.transparent
+                              ),
+                              child: Center(
+                                child: Text(items[index], style: categoryCardText),
+                              ),
                             ),
                           ),
                         );

@@ -1,7 +1,7 @@
-
-
-
 import 'package:flutter/material.dart';
+import '/Screens/bottomNavigation.dart';
+import '../colors.dart';
+import '../textstyle.dart';
 
 import '../datamodel/languageDataModel.dart';
 
@@ -13,7 +13,7 @@ class Language extends StatefulWidget {
 }
 
 class _LanguageState extends State<Language> {
-
+  int selectedIndex = -1;
 
 
   @override
@@ -24,73 +24,79 @@ class _LanguageState extends State<Language> {
         width: double.infinity,
         decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: [Color(0xFF231d1f),Color(0xFF5f0176)],
+              colors: [gradient1,gradient2],
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
             )
         ),
-        child: Column(
-          children: [
-            SizedBox(height: 30),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Align(
-                alignment: Alignment.topLeft,
-                child: Text("Listen Audio in:",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,color: Colors.white,fontSize: 30,
-                  ),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("Listen Audio in:", style: homePageHeading,),
+                ],
+              ),
+              Container(
+                height: MediaQuery.of(context).size.height*0.81,
+                width: MediaQuery.of(context).size.width*1,
+                child: GridView.builder(
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      childAspectRatio: 1.5,
+                      mainAxisSpacing: 10.0,
+                      crossAxisSpacing: 10.0,
+                    ),
+                    itemCount: lis.length,
+                    itemBuilder: (context, index){
+                      return GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            selectedIndex = index;
+                          });
+                        },
+                        child: Container(
+                          height: 40,
+                          width: 60,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(50),
+                              border: Border.all(
+                                  color: selectedIndex == index ? Colors.black : Colors.white, width: 1
+                              ),
+                              color: selectedIndex == index ? Colors.white : Colors.transparent,
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(lis[index].text,style: selectedIndex == index ? selectedCategoryCardText :categoryCardText),
+                              Text(lis[index].text1, style: selectedIndex == index ? selectedCategoryCardText :categoryCardText),
+
+                            ],
+                          ),
+                        ),
+                      );
+                    }
                 ),
               ),
-            ),
-            SizedBox(height: 30),
-            Container(
-              height: 700,
-              width: 400,
-              child: GridView.builder(
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    childAspectRatio: 1.1,
-                    crossAxisCount: 2,
-                    mainAxisSpacing: 20.0,
-                    crossAxisSpacing: 10.0,
+              if (selectedIndex != -1)
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color(0xff2F2D30),
                   ),
-                  itemCount: lis.length,
-                  itemBuilder: (context, index){
-                    return Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Container(
-                        height: 50,
-                        width: 60,
-                        decoration: BoxDecoration(
-                            border: Border.all(color: Colors.white,width: 3),
-                            borderRadius: BorderRadius.circular(50),
-                            color: Colors.transparent
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Center(
-                              child: Text(lis[index].text,
-                                style: TextStyle(
-                                    fontSize: 30,fontWeight: FontWeight.bold,color: Colors.white
-                                ),
-                              ),
-                            ),
-                            Center(
-                              child: Text(lis[index].text1,
-                                style: TextStyle(
-                                    fontSize: 30,fontWeight: FontWeight.bold,color: Colors.white
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  }
-              ),
-            ),
-          ],
+                onPressed: () {
+                    Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context)=>BottomNavigation()), (route) => false);
+                },
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0,horizontal: 100),
+                  child: Text("Continue",style: buttonText,),
+                ),
+                ),
+
+            ],
+          ),
         ),
       ),
     );

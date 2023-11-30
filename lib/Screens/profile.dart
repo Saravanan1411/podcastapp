@@ -1,5 +1,10 @@
+import 'dart:io';
+import 'dart:async';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
-import 'package:podcastapp/colors.dart';
+import 'package:image_picker/image_picker.dart';
+import '../colors.dart';
+import '../textstyle.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -9,13 +14,107 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+
+
+  Uint8List? _image;
+  File? selectedIMage;
+  //Gallery
+  Future _pickImageFromGallery() async {
+    final returnImage =
+    await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (returnImage == null) return;
+    setState(() {
+      selectedIMage = File(returnImage.path);
+      _image = File(returnImage.path).readAsBytesSync();
+    });
+    Navigator.of(context).pop(); //close the model sheet
+  }
+
+//Camera
+  Future _pickImageFromCamera() async {
+    final returnImage =
+    await ImagePicker().pickImage(source: ImageSource.camera);
+    if (returnImage == null) return;
+    setState(() {
+      selectedIMage = File(returnImage.path);
+      _image = File(returnImage.path).readAsBytesSync();
+    });
+    Navigator.of(context).pop();
+  }
+
+  void showImagePickerOption(BuildContext context) {
+    showModalBottomSheet(
+        backgroundColor: Color(0xff65006E),
+        context: context,
+        builder: (builder) {
+          return Padding(
+            padding: const EdgeInsets.all(18.0),
+            child: SizedBox(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height / 4.5,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: InkWell(
+                      onTap: () {
+                        _pickImageFromGallery();
+                      },
+                      child: const SizedBox(
+                        child: Column(
+                          children: [
+                            Icon(
+                              Icons.image,
+                              size: 70,
+                              color: Colors.white,
+                            ),
+                            Text("Gallery",
+                              style: TextStyle(
+                                  color: Colors.white
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: InkWell(
+                      onTap: () {
+                        _pickImageFromCamera();
+                      },
+                      child: const SizedBox(
+                        child: Column(
+                          children: [
+                            Icon(
+                              Icons.camera_alt,
+                              size: 70,
+                              color: Colors.white,
+                            ),
+                            Text("Camera",
+                              style: TextStyle(
+                                  color: Colors.white
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        });
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
         child: Container(
-          height: MediaQuery.of(context).size.height*1,
-          width: MediaQuery.of(context).size.width*1,
+          height: double.infinity,
+          width: double.infinity,
           decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [gradient1,gradient2],
@@ -25,229 +124,147 @@ class _ProfileState extends State<Profile> {
           ),
           child: SingleChildScrollView(
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Padding(
-                  padding: const EdgeInsets.all(15.0),
-                  child: Align(
-                    alignment: Alignment.topRight,
-                    child: Icon(Icons.settings,
-                      size: 40,color: Colors.white,
-                    ),
-                  ),
-                ),
                 SizedBox(height: 50),
-                Container(
-                  height: 200,
-                  width: 200,
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.white,width: 5),
-                    shape: BoxShape.circle,
-                    image: DecorationImage(
-                        image: NetworkImage("https://t3.ftcdn.net/jpg/02/43/12/34/360_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg"),
-                        fit: BoxFit.cover
+                Stack(
+                  children: [
+                    _image != null
+                        ? CircleAvatar(
+                        radius: 60,
+                        backgroundImage: MemoryImage(_image!))
+                        : const CircleAvatar(
+                      radius: 60,
+                      backgroundImage: NetworkImage(
+                          "https://t4.ftcdn.net/jpg/00/65/77/27/360_F_65772719_A1UV5kLi5nCEWI0BNLLiFaBPEkUbv5Fv.jpg"),
                     ),
-                  ),
+                    Positioned(
+                        bottom: -10,
+                        left: 80,
+                        child: IconButton(
+                            onPressed: () {
+                              showImagePickerOption(context);
+                            },
+                            icon:  Icon(Icons.add_a_photo,
+                              color: Colors.grey.shade600,
+                              size: 30,
+                            )))
+                  ],
                 ),
                 SizedBox(height: 20),
                 Text("Saran",
-                  style: TextStyle(
-                      fontSize: 30,fontWeight: FontWeight.bold,color: Colors.white
+                    style: homePageHeading
+                ),
+                ListTile(
+                  leading: Icon(Icons.settings_outlined,
+                    color: Colors.white,
+                  ),
+                  title: Text("General Settings",
+                    style: categoryCardText,
+                  ),
+                  trailing: Icon(Icons.arrow_forward_ios,
+                    color: Colors.white,
                   ),
                 ),
-                SizedBox(height: 20),
-                // Row(
-                //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                //   children: [
-                //     Column(
-                //       children: [
-                //         Text("15",
-                //         style: TextStyle(
-                //           fontWeight: FontWeight.bold,color: Colors.white,fontSize: 30,
-                //         )
-                //         ),
-                //         Text("Podcast",
-                //             style: TextStyle(
-                //               fontWeight: FontWeight.bold,color: Colors.white,fontSize: 20,
-                //             )
-                //         ),
-                //       ],
-                //     ),
-                //     Column(
-                //       children: [
-                //         Text("158",
-                //             style: TextStyle(
-                //               fontWeight: FontWeight.bold,color: Colors.white,fontSize: 30,
-                //             )
-                //         ),
-                //         Text("Followers",
-                //             style: TextStyle(
-                //               fontWeight: FontWeight.bold,color: Colors.white,fontSize: 20,
-                //             )
-                //         ),
-                //       ],
-                //     ),
-                //     Column(
-                //       children: [
-                //         Text("25",
-                //             style: TextStyle(
-                //               fontWeight: FontWeight.bold,color: Colors.white,fontSize: 30,
-                //             )
-                //         ),
-                //         Text("Following",
-                //             style: TextStyle(
-                //               fontWeight: FontWeight.bold,color: Colors.white,fontSize: 20,
-                //             )
-                //         ),
-                //       ],
-                //     ),
-                //   ],
-                // ),
-                SizedBox(height: 20),
-                Align(
-                  alignment: Alignment.topLeft,
-                  child: Text("My Favorite's",
-                    style: TextStyle(
-                        fontSize: 30,fontWeight: FontWeight.bold,color: Colors.white
-                    ),
+                ListTile(
+                  leading: Icon(Icons.language,
+                    color: Colors.white,
+                  ),
+                  title: Text("App Language",
+                    style: categoryCardText,
+                  ),
+                  trailing: Icon(Icons.arrow_forward_ios,
+                    color: Colors.white,
+                  ),
+
+                ),
+                ListTile(
+                  leading: Icon(Icons.music_video,
+                    color: Colors.white,
+                  ),
+                  title: Text("Audio Language",
+                    style: categoryCardText,
+                  ),
+                  trailing: Icon(Icons.arrow_forward_ios,
+                    color: Colors.white,
                   ),
                 ),
-                SizedBox(height: 10),
-                Container(
-                  height: 150,
-                  width: double.infinity,
-                  child: ListView.builder(
-                      itemCount: 15,
-                      scrollDirection: Axis.horizontal,
-                      itemBuilder: (BuildContext con, index)
-                      {
-                        return Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Container(
-                            height: 100,
-                            width: 100,
-                            decoration: BoxDecoration(
-                                border: Border.all(color: Colors.white,width: 4),
-                                image: DecorationImage(
-                                  image: NetworkImage("https://i.pinimg.com/originals/b1/0e/40/b10e40aef48acb9ce68f126a6c81c0e7.jpg"),
-                                  fit: BoxFit.cover,
-                                ),
-                                shape: BoxShape.circle
-                            ),
-                          ),
-                        );
-                      }
+                ListTile(
+                  leading: Icon(Icons.privacy_tip,
+                    color: Colors.white,
+                  ),
+                  title: Text("Privacy Settings",
+                    style: categoryCardText,
+                  ),
+                  trailing: Icon(Icons.arrow_forward_ios,
+                    color: Colors.white,
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                    height: 60,
-                    decoration: BoxDecoration(
-                        border: Border.all(color: Colors.white30,width: 2),
-                        borderRadius: BorderRadius.circular(20)
-                    ),
-                    child: Row(
-                      children: [
-                        SizedBox(width: 20),
-                        Icon(Icons.query_stats,color: Colors.white,size: 30,),
-                        SizedBox(width: 30),
-                        Text("Stats",
-                          style: TextStyle(
-                              color: Colors.white,fontWeight: FontWeight.bold,fontSize: 30
-                          ),
-                        ),
-                      ],
-                    ),
+                ListTile(
+                  leading: Icon(Icons.notifications_active,
+                    color: Colors.white,
+                  ),
+                  title: Text("Notification",
+                    style: categoryCardText,
+                  ),
+                  trailing: Icon(Icons.arrow_forward_ios,
+                    color: Colors.white,
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                    height: 60,
-                    decoration: BoxDecoration(
-                        border: Border.all(color: Colors.white30,width: 2),
-                        borderRadius: BorderRadius.circular(20)
-                    ),
-                    child: Row(
-                      children: [
-                        SizedBox(width: 20),
-                        Icon(Icons.download,color: Colors.white,size: 30,),
-                        SizedBox(width: 30),
-                        Text("Downloads",
-                          style: TextStyle(
-                              color: Colors.white,fontWeight: FontWeight.bold,fontSize: 30
-                          ),
-                        ),
-                      ],
-                    ),
+                ListTile(
+                  leading: Icon(Icons.audiotrack,
+                    color: Colors.white,
+                  ),
+                  title: Text("Audio Settings",
+                    style: categoryCardText,
+                  ),
+                  trailing: Icon(Icons.arrow_forward_ios,
+                    color: Colors.white,
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                    height: 60,
-                    decoration: BoxDecoration(
-                        border: Border.all(color: Colors.white30,width: 2),
-                        borderRadius: BorderRadius.circular(20)
-                    ),
-                    child: Row(
-                      children: [
-                        SizedBox(width: 20),
-                        Icon(Icons.file_open_sharp,color: Colors.white,size: 30,),
-                        SizedBox(width: 30),
-                        Text("Files",
-                          style: TextStyle(
-                              color: Colors.white,fontWeight: FontWeight.bold,fontSize: 30
-                          ),
-                        ),
-                      ],
-                    ),
+                ListTile(
+                  leading: Icon(Icons.contact_mail_sharp,
+                    color: Colors.white,
+                  ),
+                  title: Text("Contact Us",
+                    style: categoryCardText,
+                  ),
+                  trailing: Icon(Icons.arrow_forward_ios,
+                    color: Colors.white,
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                    height: 60,
-                    decoration: BoxDecoration(
-                        border: Border.all(color: Colors.white30,width: 2),
-                        borderRadius: BorderRadius.circular(20)
-                    ),
-                    child: Row(
-                      children: [
-                        SizedBox(width: 20),
-                        Icon(Icons.star,color: Colors.white,size: 30,),
-                        SizedBox(width: 30),
-                        Text("Starred",
-                          style: TextStyle(
-                              color: Colors.white,fontWeight: FontWeight.bold,fontSize: 30
-                          ),
-                        ),
-                      ],
-                    ),
+                ListTile(
+                  leading: Icon(Icons.help_center,
+                    color: Colors.white,
+                  ),
+                  title: Text("Help Center",
+                    style: categoryCardText,
+                  ),
+                  trailing: Icon(Icons.arrow_forward_ios,
+                    color: Colors.white,
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                    height: 60,
-                    decoration: BoxDecoration(
-                        border: Border.all(color: Colors.white30,width: 2),
-                        borderRadius: BorderRadius.circular(20)
-                    ),
-                    child: Row(
-                      children: [
-                        SizedBox(width: 20),
-                        Icon(Icons.history,color: Colors.white,size: 30,),
-                        SizedBox(width: 30),
-                        Text("History",
-                          style: TextStyle(
-                              color: Colors.white,fontWeight: FontWeight.bold,fontSize: 30
-                          ),
-                        ),
-                      ],
-                    ),
+                ListTile(
+                  leading: Icon(Icons.contact_page,
+                    color: Colors.white,
+                  ),
+                  title: Text("About Us",
+                    style: categoryCardText,
+                  ),
+                  trailing: Icon(Icons.arrow_forward_ios,
+                    color: Colors.white,
                   ),
                 ),
+                ListTile(
+                  leading: Icon(Icons.logout,
+                    color: Colors.white,
+                  ),
+                  title: Text("Logout",
+                    style: categoryCardText,
+                  ),
+
+                ),
+
               ],
             ),
           ),
@@ -256,5 +273,3 @@ class _ProfileState extends State<Profile> {
     );
   }
 }
-
-

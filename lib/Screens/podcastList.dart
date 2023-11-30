@@ -49,53 +49,116 @@ class _PodcastListState extends State<PodcastList> {
                           scrollDirection: Axis.vertical,
                           itemCount: podcastDataModelList.length,
                           itemBuilder: (BuildContext context, int index) {
-                            return Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Column(
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Container(
-                                            height:50,
-                                            width: 50,
-                                            decoration: BoxDecoration(
-                                              image: DecorationImage(
-                                                  image: NetworkImage((podcastDataModelList[index].bannerImage).toString()),
-                                                fit: BoxFit.fill,
-                                              )
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.only(left:8.0),
-                                            child: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                Text((podcastDataModelList[index].title).toString(),style: sideHeading,),
-                                                Text((podcastDataModelList[index].author).toString())
-                                              ],
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
+                            return ListTile(
+                              leading: Container(
+                                  height:50,
+                                  width: 50,
+                                  decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                      image: NetworkImage((podcastDataModelList[index].bannerImage).toString()),
+                                      fit: BoxFit.fill,
+                                    )
                                   ),
-
-
-                                  Column(
-                                    children: [
-                                      Icon(Icons.more_horiz_rounded,color: textColor,)
-                                    ],
-                                  ),
-
-
-
-
-
-                                ],
                               ),
+                              title: Text((podcastDataModelList[index].title).toString(),style: sideHeading,),
+                              subtitle:Text((podcastDataModelList[index].author).toString()) ,
+                              trailing: GestureDetector(
+                                  onTap: (){
+                                    showModalBottomSheet(
+                                        context: context,
+                                        builder:(BuildContext context) {
+                                          return Container(
+                                            decoration: BoxDecoration(
+                                                color: Colors.black
+                                            ),
+                                            child: Padding(
+                                              padding: const EdgeInsets.symmetric(vertical: 20.0,horizontal: 10.0),
+                                              child: Column(
+                                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                children: [
+                                                  Column(
+                                                    children: [
+                                                      Container(
+                                                        height:50,
+                                                        width: 50,
+                                                        decoration: BoxDecoration(
+                                                            image: DecorationImage(
+                                                              image: NetworkImage((podcastDataModelList[index].bannerImage).toString()),
+                                                            )
+                                                        ),
+                                                      ),
+                                                      Column(
+                                                        children: [
+                                                          Text((podcastDataModelList[index].title).toString()),
+                                                          Text((podcastDataModelList[index].author).toString())
+                                                        ],
+                                                      ),
+
+                                                    ],
+                                                  ),
+                                                  Row(
+                                                    children: [
+                                                      Icon(Icons.add_circle_outline_sharp),
+                                                      Padding(
+                                                        padding: const EdgeInsets.only(left: 8.0),
+                                                        child: Text("Add to Queue"),
+                                                      )
+                                                    ],
+                                                  ),
+                                                  Row(
+                                                    children: [
+                                                      Icon(Icons.remove_circle_outline),
+                                                      Padding(
+                                                        padding: const EdgeInsets.only(left: 8.0),
+                                                        child: Text("Remove from Queue"),
+                                                      )
+                                                    ],
+                                                  ),
+                                                  Row(
+                                                    children: [
+                                                      Icon(Icons.ios_share_rounded),
+                                                      Padding(
+                                                        padding: const EdgeInsets.only(left: 8.0),
+                                                        child: Text("Share"),
+                                                      )
+                                                    ],
+                                                  ),
+                                                  Row(
+                                                    children: [
+                                                      Icon(Icons.person_add_rounded),
+                                                      Padding(
+                                                        padding: const EdgeInsets.only(left: 8.0),
+                                                        child: Text("Podcast credits"),
+                                                      )
+                                                    ],
+                                                  ),
+                                                  Row(
+                                                    children: [
+                                                      Icon(Icons.attribution_rounded),
+                                                      Padding(
+                                                        padding: const EdgeInsets.only(left: 8.0),
+                                                        child: Text("View author"),
+                                                      )
+                                                    ],
+                                                  ),
+                                                  GestureDetector(
+                                                      onTap: (){
+                                                        Navigator.pop(context);
+                                                      },
+                                                      child: Text("Close")
+                                                  )
+
+                                                ],
+                                              ),
+                                            ),
+                                          );
+                                        }
+                                    );
+                                  },
+                                  child: Icon(Icons.more_horiz_rounded,color: textColor,)
+                              ) ,
+
+
                             );
 
                           },
@@ -112,3 +175,51 @@ class _PodcastListState extends State<PodcastList> {
     );
   }
 }
+
+
+
+// Row(
+// mainAxisAlignment: MainAxisAlignment.spaceBetween,
+// children: [
+// Column(
+// children: [
+// Row(
+// children: [
+// Container(
+// height:50,
+// width: 50,
+// decoration: BoxDecoration(
+// image: DecorationImage(
+// image: NetworkImage((podcastDataModelList[index].bannerImage).toString()),
+// fit: BoxFit.fill,
+// )
+// ),
+// ),
+// Padding(
+// padding: const EdgeInsets.only(left:8.0),
+// child: Column(
+// crossAxisAlignment: CrossAxisAlignment.start,
+// children: [
+// ,
+//
+// ],
+// ),
+// ),
+// ],
+// ),
+// ],
+// ),
+//
+//
+// Column(
+// children: [
+//
+// ],
+// ),
+//
+//
+//
+//
+//
+// ],
+// ),

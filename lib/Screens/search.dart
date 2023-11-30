@@ -78,19 +78,21 @@ class _SearchState extends State<Search> {
                   ),
 
                 //search list
-                ListView.builder(
+                filteredPodcasts.isNotEmpty
+                    ? ListView.builder(
                   shrinkWrap: true,
-                  itemCount: filteredPodcasts.isNotEmpty ? filteredPodcasts.length : allPodcasts.length,
+                  itemCount: filteredPodcasts.length,
                   itemBuilder: (context, index) {
-                    PodcastDetailsDataModel podcast = filteredPodcasts.isNotEmpty
-                        ? filteredPodcasts[index]
-                        : allPodcasts[index];
+                    PodcastDetailsDataModel podcast = filteredPodcasts[index];
                     return ListTile(
                       title: Text(podcast.title!),
                       subtitle: Text(podcast.author!),
                       // You can customize the appearance of each item
                     );
                   },
+                )
+                    : Center(
+                  child: Text("No results found."),
                 ),
               ],
             ),

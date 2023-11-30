@@ -1,10 +1,24 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:podcastapp/colors.dart';
+import '/Screens/language.dart';
+import 'package:podcastapp/Screens/otpVerification.dart';
 
-import 'Screens/bottomNavigation.dart';
+import 'colors.dart';
 
 
-void main() {
+import 'Screens/login.dart';
+
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+      options:FirebaseOptions(
+          apiKey: "AIzaSyCJG9Jefm7cYk_ehfPNtkT5YyJwK6IV3Sk",
+          appId: "com.example.phone",
+          messagingSenderId: "764079452608",
+          projectId: "audio-hub-3904b")
+  );
+
   runApp(const MyApp());
 }
 
@@ -35,7 +49,7 @@ class MyApp extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      home: BottomNavigation(),
+      home: Login(),
     );
   }
 }

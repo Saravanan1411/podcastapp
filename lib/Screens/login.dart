@@ -28,13 +28,13 @@ class _LoginState extends State<Login> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: Color(0x0),
+          backgroundColor: Colors.transparent,
           actions: [
             Padding(
-              padding: const EdgeInsets.fromLTRB(15, 20, 50, 1),
+              padding: const EdgeInsets.symmetric(horizontal: 10.0),
               child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    primary: Color(0xff2F2D30),
+                    backgroundColor: Color(0xff2F2D30),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                     ),
@@ -126,31 +126,36 @@ class _LoginState extends State<Login> {
                     ),
                   ),
                   SizedBox(height: 20),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      primary: Color(0xff2F2D30),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    onPressed: () async {
-                      await FirebaseAuth.instance.verifyPhoneNumber(
-                        phoneNumber: "${countryCodeController.text + phoneController.text}",
-                        verificationCompleted: (PhoneAuthCredential credential) {},
-                        verificationFailed: (FirebaseAuthException e) {},
-                        codeSent: (String verificationId, int? resendToken) {
-                          Login.verify=verificationId;
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) =>  OtpVerification(phoneNo: phoneController.text,)),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          primary: Color(0xff2F2D30),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        onPressed: () async {
+                          await FirebaseAuth.instance.verifyPhoneNumber(
+                            phoneNumber: "${countryCodeController.text + phoneController.text}",
+                            verificationCompleted: (PhoneAuthCredential credential) {},
+                            verificationFailed: (FirebaseAuthException e) {},
+                            codeSent: (String verificationId, int? resendToken) {
+                              Login.verify=verificationId;
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) =>  OtpVerification(phoneNo: phoneController.text,)),
+                              );
+                            },
+                            codeAutoRetrievalTimeout: (String verificationId) {},
                           );
                         },
-                        codeAutoRetrievalTimeout: (String verificationId) {},
-                      );
-                    },
-                    child: Text("Get OTP", style: TextStyle(fontSize: 18, color:Color(0xff9A03A8),
-                            fontWeight: FontWeight.bold)
-                    ),
+                        child: Text("Get OTP", style: TextStyle(fontSize: 18, color:Color(0xff9A03A8),
+                                fontWeight: FontWeight.bold)
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),

@@ -1,8 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import '/Screens/language.dart';
-import 'package:podcastapp/Screens/otpVerification.dart';
 
+import 'Screens/splashScreen.dart';
 import 'colors.dart';
 
 
@@ -49,7 +48,7 @@ class MyApp extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      home: Login(),
+      home: SplashScreen(),
     );
   }
 }

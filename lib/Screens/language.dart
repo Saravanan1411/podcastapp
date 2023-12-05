@@ -13,7 +13,7 @@ class Language extends StatefulWidget {
 }
 
 class _LanguageState extends State<Language> {
-  int selectedIndex = -1;
+  Set<int> selectedIndices = {};
 
 
   @override
@@ -54,7 +54,11 @@ class _LanguageState extends State<Language> {
                       return GestureDetector(
                         onTap: () {
                           setState(() {
-                            selectedIndex = index;
+                            if (selectedIndices.contains(index)) {
+                              selectedIndices.remove(index);
+                            } else {
+                              selectedIndices.add(index);
+                            }
                           });
                         },
                         child: Container(
@@ -62,17 +66,17 @@ class _LanguageState extends State<Language> {
                           width: 60,
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(50),
-                              border: Border.all(
-                                  color: selectedIndex == index ? Colors.black : Colors.white, width: 1
-                              ),
-                              color: selectedIndex == index ? Colors.white : Colors.transparent,
+                            border: Border.all(
+                              color: selectedIndices.contains(index) ? Colors.black : Colors.white, width: 1,
+                            ),
+                            color: selectedIndices.contains(index) ? Colors.white : Colors.transparent,
                           ),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Text(lis[index].text,style: selectedIndex == index ? selectedCategoryCardText :categoryCardText),
-                              Text(lis[index].text1, style: selectedIndex == index ? selectedCategoryCardText :categoryCardText),
+                              Text(lis[index].text,style: selectedIndices.contains(index) ? selectedCategoryCardText :categoryCardText),
+                              Text(lis[index].text1, style: selectedIndices.contains(index) ? selectedCategoryCardText :categoryCardText),
 
                             ],
                           ),
@@ -81,19 +85,18 @@ class _LanguageState extends State<Language> {
                     }
                 ),
               ),
-              if (selectedIndex != -1)
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xff2F2D30),
-                  ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color(0xff2F2D30),
+                ),
                 onPressed: () {
-                    Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context)=>BottomNavigation()), (route) => false);
-                },
+                  Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context)=>BottomNavigation()), (route) => false);
+                  },
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8.0,horizontal: 100),
                   child: Text("Continue",style: buttonText,),
                 ),
-                ),
+              ),
 
             ],
           ),

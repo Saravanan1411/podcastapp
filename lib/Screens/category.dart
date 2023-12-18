@@ -57,7 +57,7 @@ class _CategoryState extends State<Category> {
                   ),
                 ),
                 Container(
-                  height: MediaQuery.of(context).size.height*0.81,
+                  height: MediaQuery.of(context).size.height*1,
                   width: MediaQuery.of(context).size.width*1,
                   child: GridView.builder(
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(

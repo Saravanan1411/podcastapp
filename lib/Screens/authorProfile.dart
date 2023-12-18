@@ -100,8 +100,11 @@ class _AuthorProfileState extends State<AuthorProfile> {
                                     color: Colors.white
                                 ),
                               ),
-                              title: Text('Badass',style: TextStyle(fontWeight: FontWeight.normal,fontSize: 20,color: Colors.white),),
-                              subtitle: Text('184,059,924',style: TextStyle(fontSize: 20,fontWeight: FontWeight.normal,color: Colors.white),),
+                              title: Text('Badass',style: sideHeading,
+                              ),
+                              subtitle: Text('184,059,924', style:
+                                  sideHeading
+                              ),
                               trailing: Icon(Icons.more_horiz,color: Colors.white,),
                             );
                           }),

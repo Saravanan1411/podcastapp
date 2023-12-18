@@ -173,11 +173,16 @@ class _HomeState extends State<Home> {
                                     Text("Trending", style: sideHeading,)
                                   ],
                                 ),
-                                Row(
-                                  children: [
-                                    Text("See all",style: sideHeading,),
-                                    Icon(Icons.arrow_circle_right,color: textColor,)
-                                  ],
+                                InkWell(
+                                  onTap: (){
+                                    Navigator.of(context).push(MaterialPageRoute(builder: (context)=>PodcastList()));
+                                  },
+                                  child: Row(
+                                    children: [
+                                      Text("See all",style: sideHeading,),
+                                      Icon(Icons.arrow_circle_right,color: textColor,)
+                                    ],
+                                  ),
                                 )
                               ],
                             ),
@@ -221,11 +226,16 @@ class _HomeState extends State<Home> {
                                     Text("Recently Played", style: sideHeading,)
                                   ],
                                 ),
-                                Row(
-                                  children: [
-                                    Text("See all",style: sideHeading,),
-                                    Icon(Icons.arrow_circle_right,color: textColor,)
-                                  ],
+                                InkWell(
+                                  onTap: (){
+                                    Navigator.of(context).push(MaterialPageRoute(builder: (context)=>PodcastList()));
+                                  },
+                                  child: Row(
+                                    children: [
+                                      Text("See all",style: sideHeading,),
+                                      Icon(Icons.arrow_circle_right,color: textColor,)
+                                    ],
+                                  ),
                                 )
                               ],
                             ),
@@ -269,11 +279,16 @@ class _HomeState extends State<Home> {
                                     Text("Technology", style: sideHeading,)
                                   ],
                                 ),
-                                Row(
-                                  children: [
-                                    Text("See all",style: sideHeading,),
-                                    Icon(Icons.arrow_circle_right,color: textColor,)
-                                  ],
+                                InkWell(
+                                  onTap: (){
+                                    Navigator.of(context).push(MaterialPageRoute(builder: (context)=>PodcastList()));
+                                  },
+                                  child: Row(
+                                    children: [
+                                      Text("See all",style: sideHeading,),
+                                      Icon(Icons.arrow_circle_right,color: textColor,)
+                                    ],
+                                  ),
                                 )
                               ],
                             ),
@@ -301,7 +316,58 @@ class _HomeState extends State<Home> {
                             ),
                           ],
                         ),
-                      )
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  children: [
+                                    Icon(Icons.star,color: textColor,),
+                                    Text("Drama", style: sideHeading,)
+                                  ],
+                                ),
+                                InkWell(
+                                  onTap: (){
+                                    Navigator.of(context).push(MaterialPageRoute(builder: (context)=>PodcastList()));
+                                  },
+                                  child: Row(
+                                    children: [
+                                      Text("See all",style: sideHeading,),
+                                      Icon(Icons.arrow_circle_right,color: textColor,)
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ),
+                            Container(
+                              height: 125,
+                              child: ListView.builder(
+                                  scrollDirection: Axis.horizontal,
+
+                                  itemCount: 5,
+                                  itemBuilder: (BuildContext con,index)
+                                  {
+                                    return Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Container(
+                                        height: 125,
+                                        width: 125,
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(25),
+                                          color: Colors.cyan,
+                                        ),
+                                      ),
+                                    );
+                                  }
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ],
                   ),
                 )

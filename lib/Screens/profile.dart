@@ -3,8 +3,13 @@ import 'dart:async';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:podcastapp/Screens/Settings/audioQuality.dart';
+import 'package:podcastapp/Screens/Settings/generalSettings.dart';
+import 'package:podcastapp/Screens/login.dart';
 import '../colors.dart';
 import '../textstyle.dart';
+import 'Settings/audioLanguage.dart';
+import 'Settings/dataSaver.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -110,11 +115,11 @@ class _ProfileState extends State<Profile> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Container(
-          height: double.infinity,
-          width: double.infinity,
+    return SafeArea(
+      child: Scaffold(
+        body: Container(
+          height: MediaQuery.of(context).size.height*1,
+          width: MediaQuery.of(context).size.width*1,
           decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [gradient1,gradient2],
@@ -126,7 +131,6 @@ class _ProfileState extends State<Profile> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                SizedBox(height: 50),
                 Stack(
                   children: [
                     _image != null
@@ -151,120 +155,84 @@ class _ProfileState extends State<Profile> {
                             )))
                   ],
                 ),
-                SizedBox(height: 20),
                 Text("Saran",
                     style: homePageHeading
                 ),
-                ListTile(
-                  leading: Icon(Icons.settings_outlined,
-                    color: Colors.white,
-                  ),
-                  title: Text("General Settings",
-                    style: categoryCardText,
-                  ),
-                  trailing: Icon(Icons.arrow_forward_ios,
-                    color: Colors.white,
-                  ),
-                ),
-                ListTile(
-                  leading: Icon(Icons.language,
-                    color: Colors.white,
-                  ),
-                  title: Text("App Language",
-                    style: categoryCardText,
-                  ),
-                  trailing: Icon(Icons.arrow_forward_ios,
-                    color: Colors.white,
-                  ),
-
-                ),
-                ListTile(
-                  leading: Icon(Icons.music_video,
-                    color: Colors.white,
-                  ),
-                  title: Text("Audio Language",
-                    style: categoryCardText,
-                  ),
-                  trailing: Icon(Icons.arrow_forward_ios,
-                    color: Colors.white,
-                  ),
-                ),
-                ListTile(
-                  leading: Icon(Icons.privacy_tip,
-                    color: Colors.white,
-                  ),
-                  title: Text("Privacy Settings",
-                    style: categoryCardText,
-                  ),
-                  trailing: Icon(Icons.arrow_forward_ios,
-                    color: Colors.white,
-                  ),
-                ),
-                ListTile(
-                  leading: Icon(Icons.notifications_active,
-                    color: Colors.white,
-                  ),
-                  title: Text("Notification",
-                    style: categoryCardText,
-                  ),
-                  trailing: Icon(Icons.arrow_forward_ios,
-                    color: Colors.white,
-                  ),
-                ),
-                ListTile(
-                  leading: Icon(Icons.audiotrack,
-                    color: Colors.white,
-                  ),
-                  title: Text("Audio Settings",
-                    style: categoryCardText,
-                  ),
-                  trailing: Icon(Icons.arrow_forward_ios,
-                    color: Colors.white,
-                  ),
-                ),
-                ListTile(
-                  leading: Icon(Icons.contact_mail_sharp,
-                    color: Colors.white,
-                  ),
-                  title: Text("Contact Us",
-                    style: categoryCardText,
-                  ),
-                  trailing: Icon(Icons.arrow_forward_ios,
-                    color: Colors.white,
-                  ),
-                ),
-                ListTile(
-                  leading: Icon(Icons.help_center,
-                    color: Colors.white,
-                  ),
-                  title: Text("Help Center",
-                    style: categoryCardText,
-                  ),
-                  trailing: Icon(Icons.arrow_forward_ios,
-                    color: Colors.white,
-                  ),
-                ),
-                ListTile(
-                  leading: Icon(Icons.contact_page,
-                    color: Colors.white,
-                  ),
-                  title: Text("About Us",
-                    style: categoryCardText,
-                  ),
-                  trailing: Icon(Icons.arrow_forward_ios,
-                    color: Colors.white,
-                  ),
-                ),
-                ListTile(
-                  leading: Icon(Icons.logout,
-                    color: Colors.white,
-                  ),
-                  title: Text("Logout",
-                    style: categoryCardText,
-                  ),
-
-                ),
-
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    InkWell(
+                      onTap: (){
+                        Navigator.of(context).push(MaterialPageRoute(builder: (context) => GeneralSettings()));
+                      },
+                      child: ListTile(
+                        leading: Icon(Icons.settings_outlined, color:textColor,),
+                        title: Text("General Settings", style: profileListTile),
+                        trailing: Icon(Icons.arrow_forward_ios, color: textColor),
+                      ),
+                    ),
+                    InkWell(
+                      onTap:(){
+                        Navigator.of(context).push(MaterialPageRoute(builder: (context) => DataSaver()));
+                      } ,
+                      child: ListTile(
+                        leading: Icon(Icons.language_outlined, color:textColor),
+                        title: Text("Data saver", style: profileListTile),
+                        trailing: Icon(Icons.arrow_forward_ios, color: textColor,),
+                      ),
+                    ),
+                    InkWell(
+                      onTap:(){
+                        Navigator.of(context).push(MaterialPageRoute(builder: (context) => AudioLanguages()));
+                      } ,
+                      child: ListTile(
+                        leading: Icon(Icons.music_note, color:textColor),
+                        title: Text("Audio Language", style: profileListTile),
+                        trailing: Icon(Icons.arrow_forward_ios, color: textColor,),
+                      ),
+                    ),
+                    InkWell(
+                      onTap: (){
+                        Navigator.of(context).push(MaterialPageRoute(builder: (context) => AudioQuality()));
+                      },
+                      child: ListTile(
+                        leading: Icon(Icons.multitrack_audio, color:textColor),
+                        title: Text("Audio Quality", style: profileListTile),
+                        trailing: Icon(Icons.arrow_forward_ios, color: textColor,),
+                      ),
+                    ),
+                    ListTile(
+                      leading: Icon(Icons.notifications_active, color:textColor),
+                      title: Text("Notification", style: profileListTile),
+                      trailing: Icon(Icons.arrow_forward_ios, color: textColor,),
+                    ),
+                    ListTile(
+                      leading: Icon(Icons.privacy_tip_outlined, color:textColor),
+                      title: Text("Privacy & Policy", style: profileListTile),
+                      trailing: Icon(Icons.arrow_forward_ios, color: textColor,),
+                    ),
+                    ListTile(
+                      leading: Icon(Icons.help_outline_sharp, color:textColor),
+                      title: Text("Help Center", style: profileListTile),
+                      trailing: Icon(Icons.arrow_forward_ios, color: textColor,),
+                    ),
+                    ListTile(
+                      leading: Icon(Icons.info_outline, color:textColor),
+                      title: Text("About", style: profileListTile),
+                      trailing: Icon(Icons.arrow_forward_ios, color: textColor,),
+                    ),
+                    InkWell(
+                      onTap: (){
+                        Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context)=> Login()), (route) => false);
+                      },
+                      child: ListTile(
+                        leading: Icon(Icons.logout_outlined, color:textColor),
+                        title: Text("Logout", style: profileListTile),
+                      ),
+                    ),
+                  ],
+                )
+                
               ],
             ),
           ),

@@ -1,11 +1,11 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
+import 'Screens/authorProfile.dart';
+import 'Screens/home.dart';
 import 'Screens/splashScreen.dart';
 import 'colors.dart';
 
-
-import 'Screens/login.dart';
 
 
 void main() async {
@@ -48,7 +48,7 @@ class MyApp extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      home: SplashScreen(),
+      home: AuthorProfile(),
     );
   }
 }

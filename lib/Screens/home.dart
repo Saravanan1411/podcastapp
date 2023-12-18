@@ -1,8 +1,12 @@
+import 'dart:convert';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:podcastapp/Screens/podcastList.dart';
-import 'package:podcastapp/Screens/podcastPlayer.dart';
+import 'package:http/http.dart' as http;
 
+import '/Screens/podcastList.dart';
+import '/Screens/podcastPlayer.dart';
+import '../ApiModel/AudioGetModel.dart';
 import '../colors.dart';
 import '../datamodel/podcastdetails.dart';
 import '../textstyle.dart';
@@ -16,6 +20,26 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+
+  late Future<List<AudioGet>> _audioFuture;
+
+
+  Future<List<AudioGet>> AudioGetApi() async{
+    var audioResponse = await http.get(Uri.parse("http://localhost:4000/api/audiouploadmasterget"));
+    var audioData =jsonDecode(audioResponse.body);
+
+    return(audioData as List).map((e) => AudioGet.fromJson(e)).toList();
+  }
+
+
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _audioFuture = AudioGetApi();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(

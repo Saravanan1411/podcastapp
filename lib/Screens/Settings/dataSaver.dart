@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../colors.dart';
+import '../../textstyle.dart';
 
 class DataSaver extends StatefulWidget {
   const DataSaver({super.key});
@@ -23,8 +24,7 @@ class _DataSaverState extends State<DataSaver> {
               },
                 child: Icon(Icons.arrow_back_ios_new_outlined,)
             ),
-            title: Center(
-              child: Text('Data Saver',style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white,)),
+            title: Text('Data Saver',style: homePageHeading
             ),
           ),
           body: Container(
@@ -43,42 +43,40 @@ class _DataSaverState extends State<DataSaver> {
                   children: [
                     Row(
                       children: [
-                        Text('Data Saver',style: TextStyle(color: Colors.white,fontSize:25,fontWeight: FontWeight.normal),)
+                        Text('Data Saver',
+                          style: homePageHeading,
+                        )
                       ],
                     ),
                     SizedBox(
                       height: 100,
                       width: 400,
-                      child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      child: Row(mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            Row(
-                              children: [
-                                Text("Sets audio qualiry to low , and hides canvases\n as well as audio & video previews on home",style: TextStyle(color: Colors.grey,fontWeight: FontWeight.normal),)
-                              ],
-                            ),
-                            Row(
-                          children: [
+                            Text("Sets audio qualiry to low , and hides canvases\n as well as audio & video previews on home",style: TextStyle(color: Colors.grey,fontWeight: FontWeight.normal),),
                             Switch(value: light,
                                 activeColor: Colors.white,
                                 onChanged: (bool value){
                                   setState(() {
                                     light = value;
                                   });
-                                })
-                          ],
-                        ),
+                                }),
                           ]
                       ),
                     ),
                     Row(
                       children: [
-                        Text("Video Podcasts",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white,fontSize: 25),)
+                        Text("Video Podcasts",style:
+                        homePageHeading
+                        )
                       ],
                     ),
                     SizedBox(height: 20),
                     Row(
                       children: [
-                        Text("Download audio only",style: TextStyle(fontWeight: FontWeight.normal,fontSize: 25,color: Colors.white),)
+                        Text("Download audio only",style:
+                        homePage_Heading
+                        )
                       ],
                     ),
                     SizedBox(
@@ -86,7 +84,7 @@ class _DataSaverState extends State<DataSaver> {
                       width: 400,
                       child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Row(
+                            Row(mainAxisAlignment: MainAxisAlignment.start,
                               children: [
                                 Text("Sets audio qualiry to low , and hides canvases\n as well as audio & video previews on home",style: TextStyle(color: Colors.grey,fontWeight: FontWeight.normal),)
                               ],
@@ -107,7 +105,8 @@ class _DataSaverState extends State<DataSaver> {
                     ),
                     Row(
                       children: [
-                        Text("Stream audio only",style: TextStyle(fontWeight: FontWeight.normal,color: Colors.white,fontSize: 25),)
+                        Text("Stream audio only",style:
+                        homePage_Heading                        )
                       ],
                     ),
                     SizedBox(
@@ -115,7 +114,7 @@ class _DataSaverState extends State<DataSaver> {
                   width: 400,
                   child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Row(
+                        Row(mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Text("Sets audio qualiry to low , and hides canvases\n as well as audio & video previews on home",style: TextStyle(color: Colors.grey,fontWeight: FontWeight.normal),)
                           ],

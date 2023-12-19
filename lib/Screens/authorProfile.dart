@@ -69,10 +69,10 @@ class _AuthorProfileState extends State<AuthorProfile> {
                           padding: const EdgeInsets.all(25),
                           child: CircleAvatar(
                             radius: 30,
-                            backgroundColor: Colors.white,
+                            backgroundColor: gradient2,
                             child: IconButton(
                                 onPressed: (){},
-                                icon: Icon(Icons.play_arrow, color: Colors.purple, size: 45,)
+                                icon: Icon(Icons.play_arrow, color: Colors.white, size: 40,)
                             ),
                           ),
                         ),
@@ -81,7 +81,7 @@ class _AuthorProfileState extends State<AuthorProfile> {
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("Popular",style: sideHeading,),
+                        Text("Popular",style: side_Heading,),
                       ],
                     ),
                     Container(
@@ -100,7 +100,7 @@ class _AuthorProfileState extends State<AuthorProfile> {
                                     color: Colors.white
                                 ),
                               ),
-                              title: Text('Badass',style: sideHeading,
+                              title: Text('Badass',style: side_Heading,
                               ),
                               subtitle: Text('184,059,924', style:
                                   sideHeading
@@ -112,7 +112,7 @@ class _AuthorProfileState extends State<AuthorProfile> {
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("Podography",style: sideHeading,),
+                        Text("Podography",style: side_Heading,),
                       ],
                     ),
                     Padding(
@@ -143,7 +143,7 @@ class _AuthorProfileState extends State<AuthorProfile> {
                     ),
 
                     SizedBox(height: 20,),
-                    Text("Author's pick",style: sideHeading,),
+                    Text("Author's pick",style: side_Heading,),
                     Padding(
                       padding: const EdgeInsets.fromLTRB(10,0,0,0),
                       child: Container(
@@ -158,7 +158,7 @@ class _AuthorProfileState extends State<AuthorProfile> {
                     ),
 
                     SizedBox(height: 20,),
-                    Text("Recommended artist",style: sideHeading,),
+                    Text("Recommended artist",style: side_Heading,),
                     Padding(
                       padding: const EdgeInsets.fromLTRB(10,0,0,0),
                       child: Container(

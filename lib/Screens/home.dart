@@ -27,11 +27,8 @@ class _HomeState extends State<Home> {
   Future<List<AudioGet>> AudioGetApi() async{
     var audioResponse = await http.get(Uri.parse("http://localhost:4000/api/audiouploadmasterget"));
     var audioData =jsonDecode(audioResponse.body);
-
-    return(audioData as List).map((e) => AudioGet.fromJson(e)).toList();
+    return (audioData as List).map((e) => AudioGet.fromJson(e)).toList();
   }
-
-
 
   @override
   void initState() {
@@ -79,47 +76,60 @@ class _HomeState extends State<Home> {
                 ),
                     
                 //top carousel
-                CarouselSlider.builder(
-                  options: CarouselOptions(
-                    height: MediaQuery.of(context).size.height*0.2,
-                    aspectRatio: 16/9,
-                    viewportFraction: 0.8,
-                    enableInfiniteScroll: true,
-                    autoPlay: true,
-                    autoPlayInterval: Duration(seconds: 5),
-                    autoPlayAnimationDuration: Duration(milliseconds: 400),
-                    scrollDirection: Axis.horizontal,
-                  ),
-                  itemCount: 5,
-                  itemBuilder: (BuildContext context , int index, int realIndex){
-                    
-                    return Stack(
-                      children: [
-                        Container(
-                          height: double.infinity,
-                          width: double.infinity,
-                          margin: EdgeInsets.symmetric(horizontal: 10.0),
-                          decoration: BoxDecoration(
-                            color:Colors.lightBlue,
-                            borderRadius: BorderRadius.circular(25),
-                            image: DecorationImage(
-                                image: NetworkImage((podcastDataModelList[index].bannerImage).toString()),
-                              fit: BoxFit.fill
-                            )
-                          ),
+                FutureBuilder(
+                  future: _audioFuture,
+                  builder: (BuildContext context,snapshot) {
+                    if(snapshot.hasData) {
+                      List<AudioGet> list = snapshot.data!;
+                      return CarouselSlider.builder(
+                        options: CarouselOptions(
+                          height: MediaQuery.of(context).size.height*0.2,
+                          aspectRatio: 16/9,
+                          viewportFraction: 0.8,
+                          enableInfiniteScroll: true,
+                          autoPlay: true,
+                          autoPlayInterval: Duration(seconds: 5),
+                          autoPlayAnimationDuration: Duration(milliseconds: 400),
+                          scrollDirection: Axis.horizontal,
                         ),
-                        Positioned(
-                            bottom:10,
-                            right:20,
-                            child: GestureDetector(
-                              onTap:(){
-                                Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => PodcastPlayer()));
-                              },
-                                child: Icon(Icons.play_circle,color: textColor,size: 30,))
-                        )
-                      ]
-                    );
+                        itemCount: list.length,
+                        itemBuilder: (BuildContext context , int index, int realIndex){
+
+                          return Stack(
+                              children: [
+                                Container(
+                                  height: double.infinity,
+                                  width: double.infinity,
+                                  margin: EdgeInsets.symmetric(horizontal: 10.0),
+                                  decoration: BoxDecoration(
+                                      color:Colors.lightBlue,
+                                      borderRadius: BorderRadius.circular(25),
+                                      image: DecorationImage(
+                                          image: NetworkImage("http://localhost:4000/api${list[index].banner}"),
+                                          fit: BoxFit.fill
+                                      )
+                                  ),
+                                ),
+                                Positioned(
+                                    bottom:10,
+                                    right:20,
+                                    child: GestureDetector(
+                                        onTap:(){
+                                         Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => PodcastPlayer()));
+                                        },
+                                        child: Icon(Icons.play_circle,color: textColor,size: 30,))
+                                )
+                              ]
+                          );
+                        },
+                      );
+                    }
+                    else if (snapshot.hasError){
+                      return Text("${snapshot.error}");
+                    }
+                    return CircularProgressIndicator();
                   },
+
                 ),
                     
                 Padding(
@@ -153,31 +163,85 @@ class _HomeState extends State<Home> {
                                 )
                               ],
                             ),
-                            Container(
-                              height: 125,
-                              child: ListView.builder(
-                                  scrollDirection: Axis.horizontal,
-                    
-                                  itemCount: 5,
-                                  itemBuilder: (BuildContext con,index)
-                                  {
-                                    return Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Container(
-                                        height: 125,
-                                        width: 125,
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(25),
-                                          image: DecorationImage(
-                                              image: NetworkImage((podcastDataModelList[index].bannerImage).toString()),
-                                            fit: BoxFit.fill,
-                                          ),
-                                          color: Colors.cyan,
-                                        ),
-                                      ),
-                                    );
-                                  }
-                              ),
+                            FutureBuilder(
+                              future: _audioFuture,
+                              builder: (BuildContext context,snapshot) {
+                                if(snapshot.hasData) {
+                                  List<AudioGet> list = snapshot.data!;
+                                  return Container(
+                                    height: 125,
+                                    child: ListView.builder(
+                                        scrollDirection: Axis.horizontal,
+                                        itemCount: list.length,
+                                        itemBuilder: (BuildContext con,index)
+                                        {
+                                          return Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Container(
+                                              height: 125,
+                                              width: 125,
+                                              decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(25),
+                                                image: DecorationImage(
+                                                  image: NetworkImage("http://localhost:4000/api${list[index].banner}"),
+                                                  fit: BoxFit.fill,
+                                                ),
+                                                color: Colors.cyan,
+                                              ),
+                                            ),
+                                          );
+                                        }
+                                    ),
+                                  );
+                                  //   CarouselSlider.builder(
+                                  //   options: CarouselOptions(
+                                  //     height: MediaQuery.of(context).size.height*0.2,
+                                  //     aspectRatio: 16/9,
+                                  //     viewportFraction: 0.8,
+                                  //     enableInfiniteScroll: true,
+                                  //     autoPlay: true,
+                                  //     autoPlayInterval: Duration(seconds: 5),
+                                  //     autoPlayAnimationDuration: Duration(milliseconds: 400),
+                                  //     scrollDirection: Axis.horizontal,
+                                  //   ),
+                                  //   itemCount: list.length,
+                                  //   itemBuilder: (BuildContext context , int index, int realIndex){
+                                  //
+                                  //     return Stack(
+                                  //         children: [
+                                  //           Container(
+                                  //             height: double.infinity,
+                                  //             width: double.infinity,
+                                  //             margin: EdgeInsets.symmetric(horizontal: 10.0),
+                                  //             decoration: BoxDecoration(
+                                  //                 color:Colors.lightBlue,
+                                  //                 borderRadius: BorderRadius.circular(25),
+                                  //                 image: DecorationImage(
+                                  //                     image: NetworkImage(list[index].banner.toString()),
+                                  //                     fit: BoxFit.fill
+                                  //                 )
+                                  //             ),
+                                  //           ),
+                                  //           Positioned(
+                                  //               bottom:10,
+                                  //               right:20,
+                                  //               child: GestureDetector(
+                                  //                   onTap:(){
+                                  //                     Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => PodcastPlayer()));
+                                  //                   },
+                                  //                   child: Icon(Icons.play_circle,color: textColor,size: 30,))
+                                  //           )
+                                  //         ]
+                                  //     );
+                                  //   },
+                                  // );
+                                }
+                                else if (snapshot.hasError){
+                                  return Text("${snapshot.error}");
+                                }
+                                return CircularProgressIndicator();
+                              },
+
                             ),
                           ],
                         ),
@@ -210,27 +274,85 @@ class _HomeState extends State<Home> {
                                 )
                               ],
                             ),
-                            Container(
-                              height: 125,
-                              child: ListView.builder(
-                                  scrollDirection: Axis.horizontal,
-                    
-                                  itemCount: 5,
-                                  itemBuilder: (BuildContext con,index)
-                                  {
-                                    return Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Container(
-                                        height: 125,
-                                        width: 125,
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(25),
-                                          color: Colors.cyan,
-                                        ),
-                                      ),
-                                    );
-                                  }
-                              ),
+                            FutureBuilder(
+                              future: _audioFuture,
+                              builder: (BuildContext context,snapshot) {
+                                if(snapshot.hasData) {
+                                  List<AudioGet> list = snapshot.data!;
+                                  return Container(
+                                    height: 125,
+                                    child: ListView.builder(
+                                        scrollDirection: Axis.horizontal,
+                                        itemCount: list.length,
+                                        itemBuilder: (BuildContext con,index)
+                                        {
+                                          return Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Container(
+                                              height: 125,
+                                              width: 125,
+                                              decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(25),
+                                                image: DecorationImage(
+                                                  image: NetworkImage("http://localhost:4000/api${list[index].banner}"),
+                                                  fit: BoxFit.fill,
+                                                ),
+                                                color: Colors.cyan,
+                                              ),
+                                            ),
+                                          );
+                                        }
+                                    ),
+                                  );
+                                  //   CarouselSlider.builder(
+                                  //   options: CarouselOptions(
+                                  //     height: MediaQuery.of(context).size.height*0.2,
+                                  //     aspectRatio: 16/9,
+                                  //     viewportFraction: 0.8,
+                                  //     enableInfiniteScroll: true,
+                                  //     autoPlay: true,
+                                  //     autoPlayInterval: Duration(seconds: 5),
+                                  //     autoPlayAnimationDuration: Duration(milliseconds: 400),
+                                  //     scrollDirection: Axis.horizontal,
+                                  //   ),
+                                  //   itemCount: list.length,
+                                  //   itemBuilder: (BuildContext context , int index, int realIndex){
+                                  //
+                                  //     return Stack(
+                                  //         children: [
+                                  //           Container(
+                                  //             height: double.infinity,
+                                  //             width: double.infinity,
+                                  //             margin: EdgeInsets.symmetric(horizontal: 10.0),
+                                  //             decoration: BoxDecoration(
+                                  //                 color:Colors.lightBlue,
+                                  //                 borderRadius: BorderRadius.circular(25),
+                                  //                 image: DecorationImage(
+                                  //                     image: NetworkImage(list[index].banner.toString()),
+                                  //                     fit: BoxFit.fill
+                                  //                 )
+                                  //             ),
+                                  //           ),
+                                  //           Positioned(
+                                  //               bottom:10,
+                                  //               right:20,
+                                  //               child: GestureDetector(
+                                  //                   onTap:(){
+                                  //                     Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => PodcastPlayer()));
+                                  //                   },
+                                  //                   child: Icon(Icons.play_circle,color: textColor,size: 30,))
+                                  //           )
+                                  //         ]
+                                  //     );
+                                  //   },
+                                  // );
+                                }
+                                else if (snapshot.hasError){
+                                  return Text("${snapshot.error}");
+                                }
+                                return CircularProgressIndicator();
+                              },
+
                             ),
                           ],
                         ),
@@ -263,27 +385,85 @@ class _HomeState extends State<Home> {
                                 )
                               ],
                             ),
-                            Container(
-                              height: 125,
-                              child: ListView.builder(
-                                  scrollDirection: Axis.horizontal,
-                    
-                                  itemCount: 5,
-                                  itemBuilder: (BuildContext con,index)
-                                  {
-                                    return Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Container(
-                                        height: 125,
-                                        width: 125,
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(25),
-                                          color: Colors.cyan,
-                                        ),
-                                      ),
-                                    );
-                                  }
-                              ),
+                            FutureBuilder(
+                              future: _audioFuture,
+                              builder: (BuildContext context,snapshot) {
+                                if(snapshot.hasData) {
+                                  List<AudioGet> list = snapshot.data!;
+                                  return Container(
+                                    height: 125,
+                                    child: ListView.builder(
+                                        scrollDirection: Axis.horizontal,
+                                        itemCount: list.length,
+                                        itemBuilder: (BuildContext con,index)
+                                        {
+                                          return Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Container(
+                                              height: 125,
+                                              width: 125,
+                                              decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(25),
+                                                image: DecorationImage(
+                                                  image: NetworkImage("http://localhost:4000/api${list[index].banner}"),
+                                                  fit: BoxFit.fill,
+                                                ),
+                                                color: Colors.cyan,
+                                              ),
+                                            ),
+                                          );
+                                        }
+                                    ),
+                                  );
+                                  //   CarouselSlider.builder(
+                                  //   options: CarouselOptions(
+                                  //     height: MediaQuery.of(context).size.height*0.2,
+                                  //     aspectRatio: 16/9,
+                                  //     viewportFraction: 0.8,
+                                  //     enableInfiniteScroll: true,
+                                  //     autoPlay: true,
+                                  //     autoPlayInterval: Duration(seconds: 5),
+                                  //     autoPlayAnimationDuration: Duration(milliseconds: 400),
+                                  //     scrollDirection: Axis.horizontal,
+                                  //   ),
+                                  //   itemCount: list.length,
+                                  //   itemBuilder: (BuildContext context , int index, int realIndex){
+                                  //
+                                  //     return Stack(
+                                  //         children: [
+                                  //           Container(
+                                  //             height: double.infinity,
+                                  //             width: double.infinity,
+                                  //             margin: EdgeInsets.symmetric(horizontal: 10.0),
+                                  //             decoration: BoxDecoration(
+                                  //                 color:Colors.lightBlue,
+                                  //                 borderRadius: BorderRadius.circular(25),
+                                  //                 image: DecorationImage(
+                                  //                     image: NetworkImage(list[index].banner.toString()),
+                                  //                     fit: BoxFit.fill
+                                  //                 )
+                                  //             ),
+                                  //           ),
+                                  //           Positioned(
+                                  //               bottom:10,
+                                  //               right:20,
+                                  //               child: GestureDetector(
+                                  //                   onTap:(){
+                                  //                     Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => PodcastPlayer()));
+                                  //                   },
+                                  //                   child: Icon(Icons.play_circle,color: textColor,size: 30,))
+                                  //           )
+                                  //         ]
+                                  //     );
+                                  //   },
+                                  // );
+                                }
+                                else if (snapshot.hasError){
+                                  return Text("${snapshot.error}");
+                                }
+                                return CircularProgressIndicator();
+                              },
+
                             ),
                           ],
                         ),
@@ -316,27 +496,85 @@ class _HomeState extends State<Home> {
                                 )
                               ],
                             ),
-                            Container(
-                              height: 125,
-                              child: ListView.builder(
-                                  scrollDirection: Axis.horizontal,
-                    
-                                  itemCount: 5,
-                                  itemBuilder: (BuildContext con,index)
-                                  {
-                                    return Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Container(
-                                        height: 125,
-                                        width: 125,
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(25),
-                                          color: Colors.cyan,
-                                        ),
-                                      ),
-                                    );
-                                  }
-                              ),
+                            FutureBuilder(
+                              future: _audioFuture,
+                              builder: (BuildContext context,snapshot) {
+                                if(snapshot.hasData) {
+                                  List<AudioGet> list = snapshot.data!;
+                                  return Container(
+                                    height: 125,
+                                    child: ListView.builder(
+                                        scrollDirection: Axis.horizontal,
+                                        itemCount: list.length,
+                                        itemBuilder: (BuildContext con,index)
+                                        {
+                                          return Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Container(
+                                              height: 125,
+                                              width: 125,
+                                              decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(25),
+                                                image: DecorationImage(
+                                                  image: NetworkImage("http://localhost:4000/api${list[index].banner}"),
+                                                  fit: BoxFit.fill,
+                                                ),
+                                                color: Colors.cyan,
+                                              ),
+                                            ),
+                                          );
+                                        }
+                                    ),
+                                  );
+                                  //   CarouselSlider.builder(
+                                  //   options: CarouselOptions(
+                                  //     height: MediaQuery.of(context).size.height*0.2,
+                                  //     aspectRatio: 16/9,
+                                  //     viewportFraction: 0.8,
+                                  //     enableInfiniteScroll: true,
+                                  //     autoPlay: true,
+                                  //     autoPlayInterval: Duration(seconds: 5),
+                                  //     autoPlayAnimationDuration: Duration(milliseconds: 400),
+                                  //     scrollDirection: Axis.horizontal,
+                                  //   ),
+                                  //   itemCount: list.length,
+                                  //   itemBuilder: (BuildContext context , int index, int realIndex){
+                                  //
+                                  //     return Stack(
+                                  //         children: [
+                                  //           Container(
+                                  //             height: double.infinity,
+                                  //             width: double.infinity,
+                                  //             margin: EdgeInsets.symmetric(horizontal: 10.0),
+                                  //             decoration: BoxDecoration(
+                                  //                 color:Colors.lightBlue,
+                                  //                 borderRadius: BorderRadius.circular(25),
+                                  //                 image: DecorationImage(
+                                  //                     image: NetworkImage(list[index].banner.toString()),
+                                  //                     fit: BoxFit.fill
+                                  //                 )
+                                  //             ),
+                                  //           ),
+                                  //           Positioned(
+                                  //               bottom:10,
+                                  //               right:20,
+                                  //               child: GestureDetector(
+                                  //                   onTap:(){
+                                  //                     Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => PodcastPlayer()));
+                                  //                   },
+                                  //                   child: Icon(Icons.play_circle,color: textColor,size: 30,))
+                                  //           )
+                                  //         ]
+                                  //     );
+                                  //   },
+                                  // );
+                                }
+                                else if (snapshot.hasError){
+                                  return Text("${snapshot.error}");
+                                }
+                                return CircularProgressIndicator();
+                              },
+
                             ),
                           ],
                         ),
@@ -367,27 +605,85 @@ class _HomeState extends State<Home> {
                                 )
                               ],
                             ),
-                            Container(
-                              height: 125,
-                              child: ListView.builder(
-                                  scrollDirection: Axis.horizontal,
+                            FutureBuilder(
+                              future: _audioFuture,
+                              builder: (BuildContext context,snapshot) {
+                                if(snapshot.hasData) {
+                                  List<AudioGet> list = snapshot.data!;
+                                  return Container(
+                                    height: 125,
+                                    child: ListView.builder(
+                                        scrollDirection: Axis.horizontal,
+                                        itemCount: list.length,
+                                        itemBuilder: (BuildContext con,index)
+                                        {
+                                          return Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Container(
+                                              height: 125,
+                                              width: 125,
+                                              decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(25),
+                                                image: DecorationImage(
+                                                  image: NetworkImage("http://localhost:4000/api${list[index].banner}"),
+                                                  fit: BoxFit.fill,
+                                                ),
+                                                color: Colors.cyan,
+                                              ),
+                                            ),
+                                          );
+                                        }
+                                    ),
+                                  );
+                                  //   CarouselSlider.builder(
+                                  //   options: CarouselOptions(
+                                  //     height: MediaQuery.of(context).size.height*0.2,
+                                  //     aspectRatio: 16/9,
+                                  //     viewportFraction: 0.8,
+                                  //     enableInfiniteScroll: true,
+                                  //     autoPlay: true,
+                                  //     autoPlayInterval: Duration(seconds: 5),
+                                  //     autoPlayAnimationDuration: Duration(milliseconds: 400),
+                                  //     scrollDirection: Axis.horizontal,
+                                  //   ),
+                                  //   itemCount: list.length,
+                                  //   itemBuilder: (BuildContext context , int index, int realIndex){
+                                  //
+                                  //     return Stack(
+                                  //         children: [
+                                  //           Container(
+                                  //             height: double.infinity,
+                                  //             width: double.infinity,
+                                  //             margin: EdgeInsets.symmetric(horizontal: 10.0),
+                                  //             decoration: BoxDecoration(
+                                  //                 color:Colors.lightBlue,
+                                  //                 borderRadius: BorderRadius.circular(25),
+                                  //                 image: DecorationImage(
+                                  //                     image: NetworkImage(list[index].banner.toString()),
+                                  //                     fit: BoxFit.fill
+                                  //                 )
+                                  //             ),
+                                  //           ),
+                                  //           Positioned(
+                                  //               bottom:10,
+                                  //               right:20,
+                                  //               child: GestureDetector(
+                                  //                   onTap:(){
+                                  //                     Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => PodcastPlayer()));
+                                  //                   },
+                                  //                   child: Icon(Icons.play_circle,color: textColor,size: 30,))
+                                  //           )
+                                  //         ]
+                                  //     );
+                                  //   },
+                                  // );
+                                }
+                                else if (snapshot.hasError){
+                                  return Text("${snapshot.error}");
+                                }
+                                return CircularProgressIndicator();
+                              },
 
-                                  itemCount: 5,
-                                  itemBuilder: (BuildContext con,index)
-                                  {
-                                    return Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Container(
-                                        height: 125,
-                                        width: 125,
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(25),
-                                          color: Colors.cyan,
-                                        ),
-                                      ),
-                                    );
-                                  }
-                              ),
                             ),
                           ],
                         ),

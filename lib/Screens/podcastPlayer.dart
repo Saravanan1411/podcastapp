@@ -1,5 +1,8 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
+import '../ApiModel/AudioGetModel.dart';
 import '../textstyle.dart';
 import '/colors.dart';
 import '/datamodel/podcastdetails.dart';
@@ -21,6 +24,7 @@ class _PlaySongState extends State<PodcastPlayer> {
   @override
   void initState() {
     super.initState();
+    _audioFuture = AudioGetApi();
     _audioPlayer = AudioPlayer();
     _initPlayer();
 
@@ -51,12 +55,22 @@ class _PlaySongState extends State<PodcastPlayer> {
     _audioPlayer.dispose();
     super.dispose();
   }
-
   String _formatDuration(Duration duration) {
     String minutes = (duration.inMinutes % 60).toString().padLeft(2, '0');
     String seconds = (duration.inSeconds % 60).toString().padLeft(2, '0');
     return '$minutes:$seconds';
   }
+
+  late Future<List<AudioGet>> _audioFuture;
+
+
+  Future<List<AudioGet>> AudioGetApi() async{
+    var audioResponse = await http.get(Uri.parse("http://localhost:4000/api/audiouploadmasterget"));
+    var audioData =jsonDecode(audioResponse.body);
+
+    return(audioData as List).map((e) => AudioGet.fromJson(e)).toList();
+  }
+
 
 
   @override
@@ -189,14 +203,97 @@ class _PlaySongState extends State<PodcastPlayer> {
                       ],
                     ),
                   ),
-                  Container(
-                    height: MediaQuery.of(context).size.height*0.65,
-                    width: MediaQuery.of(context).size.width*0.9,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: NetworkImage((podcastDataModelList[_currentSongIndex].bannerImage).toString()),
-                      ),
-                    ),
+                  FutureBuilder(
+                    future: _audioFuture,
+                    builder: (BuildContext context,snapshot) {
+                      if(snapshot.hasData) {
+                        List<AudioGet> list = snapshot.data!;
+                        return  Container(
+                          height: MediaQuery.of(context).size.height*0.65,
+                          width: MediaQuery.of(context).size.width*0.9,
+                          // decoration: BoxDecoration(
+                          //   image: DecorationImage(
+                          //     image: NetworkImage(list.banner.toString()),
+                          //   ),
+                          // ),
+                        )
+                      ;
+
+                        //   Container(
+                        //   height: MediaQuery.of(context).size.height*0.65,
+                        //   width: MediaQuery.of(context).size.width*0.9,
+                        //   child: ListView.builder(
+                        //       scrollDirection: Axis.horizontal,
+                        //       itemCount: list.length,
+                        //       itemBuilder: (BuildContext con,index)
+                        //       {
+                        //         return Padding(
+                        //           padding: const EdgeInsets.all(8.0),
+                        //           child: Container(
+                        //             height: MediaQuery.of(context).size.height*0.65,
+                        //             width: MediaQuery.of(context).size.width*0.9,
+                        //             decoration: BoxDecoration(
+                        //               borderRadius: BorderRadius.circular(25),
+                        //               image: DecorationImage(
+                        //                 image: NetworkImage(list[index].banner.toString()),
+                        //                 fit: BoxFit.fill,
+                        //               ),
+                        //               color: Colors.cyan,
+                        //             ),
+                        //           ),
+                        //         );
+                        //       }
+                        //   ),
+                        // );
+                        //   CarouselSlider.builder(
+                        //   options: CarouselOptions(
+                        //     height: MediaQuery.of(context).size.height*0.2,
+                        //     aspectRatio: 16/9,
+                        //     viewportFraction: 0.8,
+                        //     enableInfiniteScroll: true,
+                        //     autoPlay: true,
+                        //     autoPlayInterval: Duration(seconds: 5),
+                        //     autoPlayAnimationDuration: Duration(milliseconds: 400),
+                        //     scrollDirection: Axis.horizontal,
+                        //   ),
+                        //   itemCount: list.length,
+                        //   itemBuilder: (BuildContext context , int index, int realIndex){
+                        //
+                        //     return Stack(
+                        //         children: [
+                        //           Container(
+                        //             height: double.infinity,
+                        //             width: double.infinity,
+                        //             margin: EdgeInsets.symmetric(horizontal: 10.0),
+                        //             decoration: BoxDecoration(
+                        //                 color:Colors.lightBlue,
+                        //                 borderRadius: BorderRadius.circular(25),
+                        //                 image: DecorationImage(
+                        //                     image: NetworkImage(list[index].banner.toString()),
+                        //                     fit: BoxFit.fill
+                        //                 )
+                        //             ),
+                        //           ),
+                        //           Positioned(
+                        //               bottom:10,
+                        //               right:20,
+                        //               child: GestureDetector(
+                        //                   onTap:(){
+                        //                     Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => PodcastPlayer()));
+                        //                   },
+                        //                   child: Icon(Icons.play_circle,color: textColor,size: 30,))
+                        //           )
+                        //         ]
+                        //     );
+                        //   },
+                        // );
+                      }
+                      else if (snapshot.hasError){
+                        return Text("${snapshot.error}");
+                      }
+                      return CircularProgressIndicator();
+                    },
+
                   ),
 
                   Column(

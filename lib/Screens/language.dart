@@ -1,8 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import '../ApiModel/LanguageGet.dart';
 import '/Screens/bottomNavigation.dart';
 import '../colors.dart';
 import '../textstyle.dart';
-
+import 'package:http/http.dart'as http;
 import '../datamodel/languageDataModel.dart';
 
 class Language extends StatefulWidget {
@@ -14,8 +17,17 @@ class Language extends StatefulWidget {
 
 class _LanguageState extends State<Language> {
   Set<int> selectedIndices = {};
-
-
+  Future<List<LanguageGet>> LanguageGetApi() async{
+    var audioResponse = await http.get(Uri.parse("http://localhost:4000/api/languagemasterget"));
+    var audioData =jsonDecode(audioResponse.body);
+    return (audioData as List).map((e) => LanguageGet.fromJson(e)).toList();
+  }
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    LanguageGetApi();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,47 +54,49 @@ class _LanguageState extends State<Language> {
               Container(
                 height: MediaQuery.of(context).size.height*0.81,
                 width: MediaQuery.of(context).size.width*1,
-                child: GridView.builder(
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      childAspectRatio: 1.5,
-                      mainAxisSpacing: 10.0,
-                      crossAxisSpacing: 10.0,
-                    ),
-                    itemCount: lis.length,
-                    itemBuilder: (context, index){
-                      return GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            if (selectedIndices.contains(index)) {
-                              selectedIndices.remove(index);
-                            } else {
-                              selectedIndices.add(index);
-                            }
-                          });
-                        },
-                        child: Container(
-                          height: 40,
-                          width: 60,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(50),
-                            border: Border.all(
-                              color: selectedIndices.contains(index) ? Colors.black : Colors.white, width: 1,
-                            ),
-                            color: selectedIndices.contains(index) ? Colors.white : Colors.transparent,
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Text(lis[index].text,style: selectedIndices.contains(index) ? selectedCategoryCardText :categoryCardText),
-                              Text(lis[index].text1, style: selectedIndices.contains(index) ? selectedCategoryCardText :categoryCardText),
-
-                            ],
-                          ),
+                child: FutureBuilder(
+                  future: LanguageGetApi(),
+                  builder: (BuildContext context,snapshot) {
+                    return GridView.builder(
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          childAspectRatio: 1.5,
+                          mainAxisSpacing: 10.0,
+                          crossAxisSpacing: 10.0,
                         ),
-                      );
-                    }
+                        itemCount: lis.length,
+                        itemBuilder: (context, index){
+                          return GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                if (selectedIndices.contains(index)) {
+                                  selectedIndices.remove(index);
+                                } else {
+                                  selectedIndices.add(index);
+                                }
+                              });
+                            },
+                            child: Container(
+                              height: 30,
+                              width: 50,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(50),
+                                  image: DecorationImage(
+                                      image: NetworkImage("http://localhost:4000/api${snapshot.data![index].languageImage}"),
+                                      fit: BoxFit.fill
+                                  ),
+                                color: selectedIndices.contains(index) ? Colors.white : Colors.transparent,
+                              ),
+                              child:
+                                  Center(child: Text(snapshot.data![index].languageName.toString(),style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold),))
+
+
+                            ),
+                          );
+                        }
+                    );
+                  },
+
                 ),
               ),
               ElevatedButton(

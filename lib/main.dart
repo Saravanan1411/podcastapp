@@ -1,7 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:podcastapp/Screens/language.dart';
 
 import 'Screens/authorProfile.dart';
+import 'Screens/category.dart';
+import 'Screens/categoryList.dart';
 import 'Screens/home.dart';
 import 'Screens/splashScreen.dart';
 import 'colors.dart';
@@ -48,7 +51,7 @@ class MyApp extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      home: AuthorProfile(),
+      home:SplashScreen(),
     );
   }
 }

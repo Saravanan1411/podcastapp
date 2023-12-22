@@ -1,4 +1,5 @@
 class AudioGet {
+  String? id;
   String? audioTitle;
   String? banner;
   String? audio_upload;
@@ -9,6 +10,7 @@ class AudioGet {
   String? authorName;
 
   AudioGet({
+    this.id,
     this.banner,
     this.audioTitle,
     this.audio_upload,
@@ -20,7 +22,9 @@ class AudioGet {
   });
 
   AudioGet.fromJson(Map<String, dynamic> json) {
+    print(json);
     audioTitle = json['audio_title']?? '';
+    id = json['id']?? '';
     banner = json['banner']?? '';
     audio_upload = json['audio_upload']?? '';
     category = json['category']?? '';
@@ -33,6 +37,7 @@ class AudioGet {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = Map<String, dynamic>();
     data['audio_title'] = audioTitle;
+    data['id'] = id;
     data['banner'] = banner;
     data['audio_upload'] = audio_upload;
     data['category'] = category;

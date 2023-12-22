@@ -1,18 +1,18 @@
-class AuthorGet {
+class AuthorGetById {
   SocialMedia? socialMedia;
   String? sId;
   String? authorName;
   String? authorProfilePicture;
   String? category;
 
-  AuthorGet(
+  AuthorGetById(
       {this.socialMedia,
         this.sId,
         this.authorName,
         this.authorProfilePicture,
         this.category});
 
-  AuthorGet.fromJson(Map<String, dynamic> json) {
+  AuthorGetById.fromJson(Map<String, dynamic> json) {
     socialMedia = json['social_media'] != null
         ? new SocialMedia.fromJson(json['social_media'])
         : null;

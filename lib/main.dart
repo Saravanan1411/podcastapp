@@ -1,12 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:podcastapp/Screens/language.dart';
-
-import 'Screens/authorProfile.dart';
-import 'Screens/category.dart';
-import 'Screens/categoryList.dart';
-import 'Screens/home.dart';
-import 'Screens/splashScreen.dart';
+import 'package:podcastapp/Screens/home.dart';
+import 'Screens/bottomNavigation.dart';
+import 'Screens/podcastPlayer.dart';
 import 'colors.dart';
 
 
@@ -14,7 +10,7 @@ import 'colors.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
-      options:FirebaseOptions(
+      options:const FirebaseOptions(
           apiKey: "AIzaSyCJG9Jefm7cYk_ehfPNtkT5YyJwK6IV3Sk",
           appId: "com.example.phone",
           messagingSenderId: "764079452608",
@@ -51,7 +47,7 @@ class MyApp extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      home:SplashScreen(),
+      home:Home(),
     );
   }
 }

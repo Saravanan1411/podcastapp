@@ -18,8 +18,8 @@ class Language extends StatefulWidget {
 class _LanguageState extends State<Language> {
   Set<int> selectedIndices = {};
   Future<List<LanguageGet>> LanguageGetApi() async{
-    var audioResponse = await http.get(Uri.parse("http://localhost:4000/api/languagemasterget"));
-    var audioData =jsonDecode(audioResponse.body);
+    var languageResponse = await http.get(Uri.parse("http://localhost:4000/api/languagemasterget"));
+    var audioData =jsonDecode(languageResponse.body);
     return (audioData as List).map((e) => LanguageGet.fromJson(e)).toList();
   }
   @override

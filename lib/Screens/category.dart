@@ -15,25 +15,7 @@ class Category extends StatefulWidget {
 }
 
 class _CategoryState extends State<Category> {
-  final items = [
-    "Hot News",
-    "Trending",
-    "Motivation",
-    "Technology",
-    "Interview",
-    "Society",
-    "Education",
-    "Sports",
-    "Politics",
-    "Arts",
-    "Music",
-    "Cinema",
-    "History",
-    "Crime",
-    "Culture",
-    "Drama",
-    "Spirituality",
-  ];
+
 
   Future<List<CategoryGet>> CategoryGetApi() async{
     var audioResponse = await http.get(Uri.parse("http://localhost:4000/api/categorymasterget"));
@@ -77,41 +59,55 @@ class _CategoryState extends State<Category> {
                   child: FutureBuilder(
                     future: CategoryGetApi(),
                     builder: (BuildContext context,snapshot) {
-                      return  GridView.builder(
-                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            childAspectRatio: 1.5,
-                            mainAxisSpacing: 10.0,
-                            crossAxisSpacing: 10.0,
-                          ),
-                          itemCount:snapshot.data!.length,
-                          itemBuilder: (context, index){
-                            return Padding(
-                              padding: const EdgeInsets.all(4.0),
-                              child: GestureDetector(
-                                onTap: (){
-                                  Navigator.of(context).push(MaterialPageRoute(builder: (context)=>CategoryList( categoryHead: items[index])));
-                                },
-                                child: Container(
-                                  height: 40,
-                                  width: 60,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(50),
-                                      color: Colors.transparent,
-                                      image: DecorationImage(
-                                          image: NetworkImage("http://localhost:4000/api${snapshot.data![index].categoryImage}"),
-                                          fit: BoxFit.fill
-                                      )
-                                  ),
-                                  child: Center(
-                                    child: Text(snapshot.data![index].categoryName.toString(),style:buttonText,),
+                      if (snapshot.hasData) {
+                        return GridView.builder(
+                            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              childAspectRatio: 1.5,
+                              mainAxisSpacing: 10.0,
+                              crossAxisSpacing: 10.0,
+                            ),
+                            itemCount: snapshot.data!.length,
+                            itemBuilder: (context, index) {
+                              return Padding(
+                                padding: const EdgeInsets.all(4.0),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    Navigator.of(context).push(
+                                        MaterialPageRoute(builder: (context) =>
+                                            CategoryList(categoryHead: snapshot
+                                                .data![index].categoryName
+                                                .toString())));
+                                  },
+                                  child: Container(
+                                    height: 40,
+                                    width: 60,
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(50),
+                                        color: Colors.transparent,
+                                        image: DecorationImage(
+                                            image: NetworkImage(
+                                                "http://localhost:4000/api${snapshot
+                                                    .data![index]
+                                                    .categoryImage}"),
+                                            fit: BoxFit.fill
+                                        )
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                        snapshot.data![index].categoryName
+                                            .toString(), style: buttonText,),
+                                    ),
                                   ),
                                 ),
-                              ),
-                            );
-                          }
-                      );
-                    },
+                              );
+                            }
+                        );
+                      }else if (snapshot.hasError){
+                        return Text("error");
+                      }
+                      return CircularProgressIndicator();
+                    }
 
                   ),
                 ),

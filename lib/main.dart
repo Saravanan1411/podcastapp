@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:podcastapp/Screens/home.dart';
+import 'package:podcastapp/Screens/splashScreen.dart';
 import 'Screens/bottomNavigation.dart';
 import 'Screens/podcastPlayer.dart';
 import 'colors.dart';
@@ -47,7 +48,7 @@ class MyApp extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      home:Home(),
+      home:SplashScreen(),
     );
   }
 }

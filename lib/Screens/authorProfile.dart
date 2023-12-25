@@ -1,15 +1,20 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:podcastapp/Screens/podcastList.dart';
+import 'package:podcastapp/Screens/podcastPlayer.dart';
 import 'package:podcastapp/colors.dart';
 import 'package:podcastapp/textstyle.dart';
 import 'package:http/http.dart' as http;
 import '../ApiModel/AudioGetByAuthorId.dart';
+import '../ApiModel/AudioGetModel.dart';
 import '../ApiModel/AuthorByIdModel.dart';
+import '../ApiModel/AuthorDataGetModel.dart';
 
 class AuthorProfile extends StatefulWidget {
   final String authorId;
-  const AuthorProfile({super.key, required this.authorId});
+  final List<AuthorGet> authorList;
+  const AuthorProfile({super.key, required this.authorId, required this.authorList});
 
   @override
   State<AuthorProfile> createState() => _AuthorProfileState();
@@ -64,6 +69,11 @@ class _AuthorProfileState extends State<AuthorProfile> {
       print("Error: $error");
       throw Exception('An error occurred while processing the request');
     }
+  }
+  Future<List<AudioGet>> AudioGetApi() async{
+    var homeResponse = await http.get(Uri.parse("http://localhost:4000/api/audiouploadmasterget"));
+    var audioData =jsonDecode(homeResponse.body);
+    return (audioData as List).map((e) => AudioGet.fromJson(e)).toList();
   }
   Future<List<AudioGetByAuthorId>> AudioByAuthor() async {
     var authorResponse = await http.get(Uri.parse("http://localhost:4000/api/audiouploadgetbyauthorid/6583eb2e491853e7ce707f6e"));
@@ -133,13 +143,13 @@ class _AuthorProfileState extends State<AuthorProfile> {
                                         image: NetworkImage("http://localhost:4000/api${snapshot.data!.authorProfilePicture}"),
                                         fit: BoxFit.fill
                                     )
-
                                 ),
-                                child: Center(child: Text(snapshot.data!.authorName.toString(),style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20,color: Colors.white),)),
-
+                                child: Center(child: Text(snapshot.data!.authorName.toString(),
+                                  style: TextStyle(fontWeight: FontWeight.bold,
+                                      fontSize: 20,
+                                      color: Colors.white),)),
                               );
                             },
-
                           ),
                         ),
                       );
@@ -149,9 +159,6 @@ class _AuthorProfileState extends State<AuthorProfile> {
                     }
                     return CircularProgressIndicator();
                   }),
-
-
-
               leading: InkWell(
                   onTap: (){
                     Navigator.of(context).pop();
@@ -159,8 +166,6 @@ class _AuthorProfileState extends State<AuthorProfile> {
                   child: Icon(Icons.arrow_back_ios,size: 30,color: textColor,)
               ),
             ),
-
-
             ];
           },
             body:
@@ -204,59 +209,27 @@ class _AuthorProfileState extends State<AuthorProfile> {
                                   Text("Popular",style: side_Heading,),
                                 ],
                               ),
-                              Container(
-                                height: 400,
-                                width: double.infinity,
-                                child: ListView.builder(
-                                    physics: NeverScrollableScrollPhysics(),
-                                    scrollDirection: Axis.vertical,
-                                    itemCount: snapshot.data!.length,
-                                    itemBuilder: (BuildContext con, index){
-                                      return  ListTile(
-                                        leading: Container(
-                                          height: 50,
-                                          width: 50,
-                                          decoration: BoxDecoration(
-                                              color: Colors.white,
-                                              image: DecorationImage(
-                                                  image: NetworkImage("http://localhost:4000/api${snapshot.data![index].banner}"),
-                                                  fit: BoxFit.fill
-                                              )
-                                          ),
-                                        ),
-                                        title: Text(snapshot.data![index].audioTitle.toString(),style: side_Heading,
-                                        ),
-                                        subtitle: Text(snapshot.data![index].audioTitle.toString(), style:
-                                        sideHeading
-                                        ),
-                                        trailing: Icon(Icons.more_horiz,color: Colors.white,),
-                                      );
-                                    }),
-                              ),
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text("Podography",style: side_Heading,),
-                                ],
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.fromLTRB(10,0,0,0),
-                                child: FutureBuilder(
-                                  future:  AudioByAuthor(),
-                                  builder: (BuildContext context,snapshot) {
-                                    return   Container(
-                                      height: 150,
-                                      width: double.infinity,
-                                      child: ListView.builder(
-                                          scrollDirection:Axis.horizontal ,
-                                          itemCount:snapshot.data!.length,
-                                          itemBuilder:(BuildContext con,index)
-                                          {
-                                            return Padding(
-                                              padding: const EdgeInsets.all(10.0),
-                                              child: Container(
-                                                height: 150,
-                                                width: 150,
+                              FutureBuilder(
+                                future: AudioGetApi(),
+                                builder: (BuildContext context,snapshot) {
+                                  List<AudioGet> list = snapshot.data!;
+                                  return SizedBox(
+                                    height: 400,
+                                    width: double.infinity,
+                                    child: ListView.builder(
+                                        physics: NeverScrollableScrollPhysics(),
+                                        scrollDirection: Axis.vertical,
+                                        itemCount: snapshot.data!.length,
+                                        itemBuilder: (BuildContext con, index){
+                                          return  GestureDetector(
+                                            onTap:(){
+
+                                              Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => PodcastPlayer(songId: list[index].id.toString(),)));
+                                            },
+                                            child: ListTile(
+                                              leading: Container(
+                                                height: 50,
+                                                width: 50,
                                                 decoration: BoxDecoration(
                                                     color: Colors.white,
                                                     image: DecorationImage(
@@ -265,15 +238,93 @@ class _AuthorProfileState extends State<AuthorProfile> {
                                                     )
                                                 ),
                                               ),
-                                            );
-                                          }
-                                      ),
-                                    );
+                                              title: Text(snapshot.data![index].audioTitle.toString(),style: side_Heading,
+                                              ),
+                                              subtitle: Text(snapshot.data![index].audioTitle.toString(), style:
+                                              sideHeading
+                                              ),
+                                              trailing: Icon(Icons.more_horiz,color: Colors.white,),
+                                            ),
+                                          );
+                                        }),
+                                  );
+                                },
+
+                              ),
+
+
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: FutureBuilder(
+                                  future:  AudioGetApi() ,
+                                  builder: (BuildContext context,snapshot) {
+                                    if(snapshot.hasData) {
+                                      List<AudioGet> list = snapshot.data!;
+                                      return Column(
+                                        children: [
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  Icon(Icons.recommend_rounded,color: textColor,),
+                                                  Text("Recommended", style: sideHeading,)
+                                                ],
+                                              ),
+                                              GestureDetector(
+                                                onTap: (){
+                                                  Navigator.of(context).push(MaterialPageRoute(builder: (context)=>PodcastList(modelList:  snapshot.data!.toList(),)));
+                                                },
+                                                child: Row(
+                                                  children: [
+                                                    Text("See all",style: sideHeading,),
+                                                    Icon(Icons.arrow_circle_right,color: textColor,)
+                                                  ],
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                          SizedBox(
+                                            height: 125,
+                                            child: ListView.builder(
+                                                scrollDirection: Axis.horizontal,
+                                                itemCount: list.length,
+                                                itemBuilder: (BuildContext con,index)
+                                                {
+                                                  return Padding(
+                                                    padding: const EdgeInsets.all(8.0),
+                                                    child: GestureDetector(
+                                                      onTap:(){
+                                                        Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => PodcastPlayer(songId: list[index].id.toString(),)));
+                                                      },
+                                                      child: Container(
+                                                        height: 125,
+                                                        width: 125,
+                                                        decoration: BoxDecoration(
+                                                          borderRadius: BorderRadius.circular(25),
+                                                          image: DecorationImage(
+                                                            image: NetworkImage("http://localhost:4000/api${list[index].banner}"),
+                                                            fit: BoxFit.fill,
+                                                          ),
+                                                          color: Colors.cyan,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  );
+                                                }
+                                            ),
+                                          ),
+                                        ],
+                                      );
+
+                                    }
+                                    else if (snapshot.hasError){
+                                      return Text("${snapshot.error}");
+                                    }
+                                    return const CircularProgressIndicator();
                                   },
 
                                 ),
-
-
                               ),
 
 
@@ -284,6 +335,8 @@ class _AuthorProfileState extends State<AuthorProfile> {
                                 child: FutureBuilder(
                                   future:  AudioByAuthor(),
                                   builder: (BuildContext context,snapshot) {
+                                    List<AudioGetByAuthorId> list = snapshot.data!;
+
                                     return   Container(
                                       height: 500,
                                       width: double.infinity,
@@ -293,15 +346,20 @@ class _AuthorProfileState extends State<AuthorProfile> {
                                           {
                                             return Padding(
                                               padding: const EdgeInsets.all(10.0),
-                                              child: Container(
-                                                height: 400,
-                                                width: double.infinity,
-                                                decoration: BoxDecoration(
-                                                    color: Colors.white,
-                                                    image: DecorationImage(
-                                                        image: NetworkImage("http://localhost:4000/api${snapshot.data![1].banner}",),
-                                                        fit: BoxFit.fill
-                                                    )
+                                              child: GestureDetector(
+                                                onTap:(){
+                                                  Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => PodcastPlayer(songId: list[index].sId.toString(),)));
+                                                },
+                                                child: Container(
+                                                  height: 400,
+                                                  width: double.infinity,
+                                                  decoration: BoxDecoration(
+                                                      color: Colors.white,
+                                                      image: DecorationImage(
+                                                          image: NetworkImage("http://localhost:4000/api${snapshot.data![1].banner}",),
+                                                          fit: BoxFit.fill
+                                                      )
+                                                  ),
                                                 ),
                                               ),
                                             );
@@ -319,37 +377,37 @@ class _AuthorProfileState extends State<AuthorProfile> {
                               Text("Recommended artist",style: side_Heading,),
                               Padding(
                                 padding: const EdgeInsets.fromLTRB(10,0,0,0),
-                                child: Container(
+                                child: SizedBox(
                                   height: 125,
 
-                                  child: FutureBuilder(
-                                    future: AuthorGetApi(),
-                                    builder: (BuildContext context,snapshot) {
-                                      return   ListView.builder(
-                                          scrollDirection:Axis.horizontal ,
-                                          itemCount:5,
-                                          itemBuilder:(BuildContext con,index)
-                                          {
-                                            return Padding(
-                                              padding: const EdgeInsets.all(5),
-                                              child: Container(
-                                                height:125,
-                                                width: 125,
-                                                decoration: BoxDecoration(
+                                  child:ListView.builder(
+                                      scrollDirection:Axis.horizontal ,
+                                      itemCount:widget.authorList.length,
+                                      itemBuilder:(BuildContext con,index)
+                                      {
+                                        return Padding(
+                                          padding: const EdgeInsets.all(5),
+                                          child: GestureDetector(
+                                            onTap: (){
+                                              Navigator.of(context).push(MaterialPageRoute(builder: (context)=>AuthorProfile(authorId: snapshot.data![index].sId.toString(),
+                                                authorList: widget.authorList,)));
+                                            },
+                                            child: Container(
+                                              height:125,
+                                              width: 125,
+                                              decoration: BoxDecoration(
                                                   shape: BoxShape.circle,
-                                                    color: Colors.purple,
-                                                    image: DecorationImage(
-                                                        image: NetworkImage("http://localhost:4000/api${snapshot.data!.authorProfilePicture}"),
-                                                        fit: BoxFit.fill
-                                                    )
+                                                  color: Colors.purple,
+                                                  image: DecorationImage(
+                                                      image: NetworkImage("http://localhost:4000/api${widget.authorList[index].authorProfilePicture}"),
+                                                      fit: BoxFit.fill
+                                                  )
 
-                                                ),
                                               ),
-                                            );
-                                          }
-                                      );
-                                    },
-
+                                            ),
+                                          ),
+                                        );
+                                      }
                                   ),
                                 ),
                               ),

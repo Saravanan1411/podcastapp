@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:podcastapp/Screens/podcastList.dart';
+import 'package:podcastapp/Screens/podcastPlayer.dart';
 import 'package:podcastapp/textstyle.dart';
 import 'package:http/http.dart' as http;
 import '../ApiModel/AudioGetModel.dart';
@@ -73,58 +74,71 @@ class _CategoryListState extends State<CategoryList> {
                       ),
                     ],
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          Text("Podcasts", style: sideHeading,)
-                        ],
-                      ),
-                      GestureDetector(
-                        onTap: (){
-                          Navigator.of(context).push(MaterialPageRoute(builder: (context)=>PodcastList(modelList: [],)));
-                        },
-                        child: Row(
-                          children: [
-                            Text("See all",style: sideHeading,),
-                            Icon(Icons.arrow_circle_right,color: textColor,)
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
-                  Container(
-                    height: 125,
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
                     child: FutureBuilder(
                       future: AudioApi(),
-                      builder: (BuildContext context, snapshot) {
-                        if(snapshot.hasData){
-                          return ListView.builder(
-                              scrollDirection:Axis.horizontal ,
-                              itemCount:5,
-                              itemBuilder:(context,index)
-                              {
-                                return Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Container(
-                                    height:125,
-                                    width: 125,
-                                    decoration: BoxDecoration(
-                                      border: Border.all(),
-                                      borderRadius: BorderRadius.circular(25),
-                                      color: Colors.white,
-                                      image: DecorationImage(
-                                        image: NetworkImage("http://localhost:4000/api${snapshot.data![index].banner}"),
-                                        fit: BoxFit.fill,
-                                      ),
-                                    ),
-
+                      builder: (BuildContext context,snapshot) {
+                        if(snapshot.hasData) {
+                          List<AudioGet> list = snapshot.data!;
+                          return Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Icon(Icons.recommend_rounded,color: textColor,),
+                                      Text("Recommended", style: sideHeading,)
+                                    ],
                                   ),
-                                );
-                              }
+                                  GestureDetector(
+                                    onTap: (){
+                                      Navigator.of(context).push(MaterialPageRoute(builder: (context)=>PodcastList(modelList: snapshot.data!.toList(),)));
+                                    },
+                                    child: Row(
+                                      children: [
+                                        Text("See all",style: sideHeading,),
+                                        Icon(Icons.arrow_circle_right,color: textColor,)
+                                      ],
+                                    ),
+                                  )
+                                ],
+                              ),
+                              SizedBox(
+                                height: 125,
+                                child: ListView.builder(
+                                    scrollDirection: Axis.horizontal,
+                                    itemCount: list.length,
+                                    itemBuilder: (BuildContext con,index)
+                                    {
+                                      return Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: GestureDetector(
+                                          onTap:(){
+                                            Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => PodcastPlayer(songId: list[index].id.toString(),)));
+                                          },
+                                          child: Container(
+                                            height: 125,
+                                            width: 125,
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(25),
+                                              image: DecorationImage(
+                                                image: NetworkImage("http://localhost:4000/api${list[index].banner}"),
+                                                fit: BoxFit.fill,
+                                              ),
+                                              color: Colors.cyan,
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                ),
+                              ),
+                            ],
                           );
-                        }else if(snapshot.hasError){
+                        }
+                        else if (snapshot.hasError){
                           return Text("${snapshot.error}");
                         }
                         return CircularProgressIndicator();
@@ -177,7 +191,7 @@ class _CategoryListState extends State<CategoryList> {
                                   padding: const EdgeInsets.all(8.0),
                                   child: GestureDetector(
                                     onTap: (){
-                                      Navigator.of(context).push(MaterialPageRoute(builder: (context)=>AuthorProfile(authorId: "dd",)));
+                                      Navigator.of(context).push(MaterialPageRoute(builder: (context)=>AuthorProfile(authorId: snapshot.data![index].sId.toString(), authorList: snapshot.data!.toList(),)));
                                     },
                                     child: Container(
                                       height: 100,

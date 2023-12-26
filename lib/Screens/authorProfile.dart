@@ -13,8 +13,11 @@ import '../ApiModel/AuthorDataGetModel.dart';
 
 class AuthorProfile extends StatefulWidget {
   final String authorId;
-  final List<AuthorGet> authorList;
-  const AuthorProfile({super.key, required this.authorId, required this.authorList});
+  final String authorpic;
+  final String authorname;
+
+  //final List<AuthorGet> authorList;
+  const AuthorProfile({super.key, required this.authorId, required this.authorpic,required this.authorname});
 
   @override
   State<AuthorProfile> createState() => _AuthorProfileState();
@@ -24,8 +27,10 @@ class _AuthorProfileState extends State<AuthorProfile> {
 
   Future<AuthorGetById> AuthorGetApi() async {
     try {
-      print("abcd");
-      var homeResponse = await http.get(Uri.parse("http://localhost:4000/api/authormastergetbyid/6583eb2e491853e7ce707f6e"));
+      print(
+        "${widget.authorId}"
+      );
+      var homeResponse = await http.get(Uri.parse("http://localhost:4000/api/authormastergetbyid/${widget.authorId}"));
       print("abcde - Status code: ${homeResponse.statusCode}");
 
       if (homeResponse.statusCode == 200) {
@@ -382,7 +387,7 @@ class _AuthorProfileState extends State<AuthorProfile> {
 
                                   child:ListView.builder(
                                       scrollDirection:Axis.horizontal ,
-                                      itemCount:widget.authorList.length,
+                                      itemCount:1,
                                       itemBuilder:(BuildContext con,index)
                                       {
                                         return Padding(
@@ -390,7 +395,7 @@ class _AuthorProfileState extends State<AuthorProfile> {
                                           child: GestureDetector(
                                             onTap: (){
                                               Navigator.of(context).push(MaterialPageRoute(builder: (context)=>AuthorProfile(authorId: snapshot.data![index].sId.toString(),
-                                                authorList: widget.authorList,)));
+                                                authorpic: widget.authorpic, authorname: widget.authorname,)));
                                             },
                                             child: Container(
                                               height:125,
@@ -399,7 +404,7 @@ class _AuthorProfileState extends State<AuthorProfile> {
                                                   shape: BoxShape.circle,
                                                   color: Colors.purple,
                                                   image: DecorationImage(
-                                                      image: NetworkImage("http://localhost:4000/api${widget.authorList[index].authorProfilePicture}"),
+                                                      image: NetworkImage("http://localhost:4000/api${widget.authorpic}"),
                                                       fit: BoxFit.fill
                                                   )
 

@@ -23,7 +23,9 @@ class _CategoryListState extends State<CategoryList> {
   Future<List<AuthorGet>> CategoryGetApi() async{
     var authorListResponse = await http.get(Uri.parse("http://localhost:4000/api/authormasterget"));
     var authorListData =jsonDecode(authorListResponse.body);
+    print(authorListData);
     return (authorListData as List).map((e) => AuthorGet.fromJson(e)).toList();
+
   }
 
   Future<List<AudioGet>> AudioApi() async{
@@ -191,7 +193,13 @@ class _CategoryListState extends State<CategoryList> {
                                   padding: const EdgeInsets.all(8.0),
                                   child: GestureDetector(
                                     onTap: (){
-                                      Navigator.of(context).push(MaterialPageRoute(builder: (context)=>AuthorProfile(authorId: snapshot.data![index].sId.toString(), authorList: snapshot.data!.toList(),)));
+
+                                      //print("aaaaaaaaaa${snapshot.data![index].authorName}");
+                                      Navigator.of(context).push(MaterialPageRoute(builder: (context)=>AuthorProfile(authorId: snapshot.data![index].sId.toString(),
+                                        //authorList: snapshot.data!.toList(),
+                                        authorpic: snapshot.data![index].authorProfilePicture.toString(),
+                                        authorname: snapshot.data![index].authorName.toString(),
+                                      )));
                                     },
                                     child: Container(
                                       height: 100,
